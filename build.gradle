@@ -4,7 +4,7 @@ plugins {
     id 'eclipse'
     id 'maven-publish'
     id 'com.jfrog.bintray' version '1.8.0'
-    id 'io.spring.dependency-management' version '1.0.1.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.5.RELEASE'
 }
 
 group 'com.github.philippheuer.events4j'
@@ -17,12 +17,28 @@ repositories {
     jcenter()
 }
 
+dependencyManagement {
+    imports {
+        mavenBom "io.projectreactor:reactor-bom:Bismuth-SR9"
+    }
+}
+
 dependencies {
-    // SLF4J
+    // SLF4J API
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
 
+    // Project Reactor
+    compile group: 'io.projectreactor', name: 'reactor-core'
+
+    // Testing
+    // - jUnit
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    // - Logging
+    testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.13'
+    
     // Getter & Setter
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.16.20'
+    testCompile group: 'org.projectlombok', name: 'lombok', version: '1.16.20'
 }
 
 /**
