@@ -1,8 +1,7 @@
 package com.github.philippheuer.events4j.domain;
 
 import com.github.philippheuer.events4j.services.ServiceMediator;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.Calendar;
 
@@ -13,8 +12,7 @@ import java.util.Calendar;
  * @version %I%, %G%
  * @since 1.0
  */
-@Getter
-@Setter
+@Data
 public abstract class Event {
 
     /**
