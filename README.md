@@ -1,25 +1,27 @@
-# Events4J
+# *Events4J*
 
-## Description
+# Description
 
+A simple wrapper to dispatch/consume events using Reactor.
 
+# Usage
 
-## Usage
-
-#### Initialization
+## Initialization
 
 ```java
 EventManager eventManager = new EventManager();
 ```
 
-#### Event Producer
+## Event Producer
 
 ```java
 TestEvent testEvent = new TestEvent();
 eventManager.dispatchEvent(testEvent);
 ```
 
-#### Event Consumer
+## Event Consumer
+
+#### Subscriber-based
 
 ```java
 eventManager.onEvent(TestEvent.class).subscribe(event -> {
@@ -27,6 +29,25 @@ eventManager.onEvent(TestEvent.class).subscribe(event -> {
         event.getEventId(),
         event.getFiredAt().toInstant().toString());
 });
+```
+
+#### Annotation-based
+
+*The Consumer*
+```java
+public class TestEventListener {
+
+    @EventSubscriber
+    public void onTestEvent(TestEvent testEvent) {
+        System.out.println("TestEvent Listener Executed.");
+    }
+
+}
+```
+
+*Register the Consumer*
+```java
+eventManager.registerListener(new TestEventListener());
 ```
 
 ## License

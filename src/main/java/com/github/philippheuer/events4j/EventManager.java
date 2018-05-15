@@ -1,6 +1,8 @@
 package com.github.philippheuer.events4j;
 
+import com.github.philippheuer.events4j.annotation.EventSubscriber;
 import com.github.philippheuer.events4j.domain.Event;
+import com.github.philippheuer.events4j.services.AnnotationEventManager;
 import com.github.philippheuer.events4j.services.ServiceMediator;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -41,12 +43,19 @@ public class EventManager {
     private final ServiceMediator serviceMediator;
 
     /**
+     * Annotation based event manager
+     */
+    private final AnnotationEventManager annotationEventManager = new AnnotationEventManager();
+
+    /**
      * Creates a new EventManager
      */
     public EventManager() {
         this.scheduler = Schedulers.parallel();
         this.processor = EmitterProcessor.create(256);
         this.serviceMediator = new ServiceMediator(this);
+
+        registerInternalListener();
     }
 
     /**
@@ -56,6 +65,8 @@ public class EventManager {
         this.scheduler = scheduler;
         this.processor = processor;
         this.serviceMediator = new ServiceMediator(this);
+
+        registerInternalListener();
     }
 
     /**
@@ -89,6 +100,26 @@ public class EventManager {
      */
     public <E extends Event> Flux<E> onEvent(Class<E> eventClass) {
         return processor.publishOn(scheduler).ofType(eventClass);
+    }
+
+    /**
+     * Registers a listener using {@link EventSubscriber} method annotations.
+     *
+     * @param eventListener The class instance containing methods annotated with {@link EventSubscriber}.
+     */
+    public void registerListener(Object eventListener) {
+        getAnnotationEventManager().registerListener(eventListener);
+    }
+
+    /**
+     * Register internal listeners
+     */
+    private void registerInternalListener() {
+        // Annotation-based EventListener
+        onEvent(Event.class).subscribe(event -> {
+            log.debug("Passed event [{}] to the method based annotation manager at {}.", event.getEventId(), event.getFiredAt().toInstant().toString());
+            annotationEventManager.dispatch(event);
+        });
     }
 
 }
