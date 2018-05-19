@@ -1,7 +1,6 @@
 package com.github.philippheuer.events4j.services;
 
 import com.github.philippheuer.events4j.EventManager;
-import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +14,6 @@ import java.util.Map;
  * @version %I%, %G%
  * @since 1.0
  */
-@Getter
 public final class ServiceMediator {
 
     /**
@@ -29,11 +27,39 @@ public final class ServiceMediator {
     private final Map<String, Object> serviceReferences = new HashMap<>();
 
     /**
-     * Constructor
+     * The Constructor.
      *
      * @param eventManager The EventManager
      */
     public ServiceMediator(final EventManager eventManager) {
         this.eventManager = eventManager;
+    }
+
+    /**
+     * Add a service to the ServiceMediator.
+     *
+     * @param serviceName The ServiceName
+     * @param serviceInstance The ServiceInstance
+     */
+    public void addService(String serviceName, Object serviceInstance) {
+        serviceReferences.put(serviceName, serviceInstance);
+    }
+
+    /**
+     * Gets a service from the ServiceMediator
+     *
+     * @param serviceClass The ServiceClass you expect
+     * @param serviceName The ServiceName
+     * @param <T> The type of the Service
+     * @return The ServiceInstance
+     */
+    public <T extends Object> T getService(Class<T> serviceClass, String serviceName) {
+        Object serviceInstance = serviceReferences.get(serviceName);
+
+        if (serviceClass.isInstance(serviceInstance)) {
+            return (T) serviceReferences.get(serviceName);
+        } else {
+            throw new RuntimeException("Can't cast service " + serviceName + " to " + serviceClass.getSimpleName() + "!");
+        }
     }
 }

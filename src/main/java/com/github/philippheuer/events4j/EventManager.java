@@ -60,6 +60,9 @@ public class EventManager {
 
     /**
      * Constructor to provide a custom processor / scheduler
+     *
+     * @param scheduler The scheduler provides some guarantees required by Reactive Streams flows like FIFO execution
+     * @param processor Used to bridge gateway events to the subscribers
      */
     public EventManager(Scheduler scheduler, FluxProcessor<Event, Event> processor) {
         this.scheduler = scheduler;
