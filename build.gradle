@@ -75,11 +75,6 @@ publishing {
             groupId project.group
             artifactId project.name
             version project.version
-            pom.withXml {
-                def root = asNode()
-                root.appendNode("description", project.description)
-                root.appendNode("name", project.name)
-            }
         }
     }
 }

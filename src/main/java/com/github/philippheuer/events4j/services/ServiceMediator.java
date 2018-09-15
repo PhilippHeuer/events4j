@@ -1,6 +1,7 @@
 package com.github.philippheuer.events4j.services;
 
 import com.github.philippheuer.events4j.EventManager;
+import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +20,7 @@ public final class ServiceMediator {
     /**
      * Holds a reference of the EventManager
      */
+    @Getter
     private final EventManager eventManager;
 
     /**
