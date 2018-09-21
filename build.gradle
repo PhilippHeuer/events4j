@@ -19,7 +19,7 @@ repositories {
 
 dependencyManagement {
     imports {
-        mavenBom "io.projectreactor:reactor-bom:Bismuth-SR9"
+        mavenBom "io.projectreactor:reactor-bom:Bismuth-RELEASE"
     }
 }
 
