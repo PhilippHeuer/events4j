@@ -6,10 +6,7 @@ import com.github.philippheuer.events4j.services.AnnotationEventManager;
 import com.github.philippheuer.events4j.services.ServiceMediator;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.EmitterProcessor;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.FluxProcessor;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.*;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 
@@ -43,6 +40,11 @@ public class EventManager {
     private final ServiceMediator serviceMediator;
 
     /**
+     * Event Sink
+     */
+    private final FluxSink<Event> eventSink;
+
+    /**
      * Annotation based event manager
      */
     private final AnnotationEventManager annotationEventManager = new AnnotationEventManager();
@@ -51,8 +53,9 @@ public class EventManager {
      * Creates a new EventManager
      */
     public EventManager() {
-        this.scheduler = Schedulers.parallel();
-        this.processor = EmitterProcessor.create(256);
+        this.scheduler = Schedulers.elastic();
+        this.processor = EmitterProcessor.create(false);
+        this.eventSink = processor.sink();
         this.serviceMediator = new ServiceMediator(this);
 
         registerInternalListener();
@@ -67,6 +70,7 @@ public class EventManager {
     public EventManager(Scheduler scheduler, FluxProcessor<Event, Event> processor) {
         this.scheduler = scheduler;
         this.processor = processor;
+        this.eventSink = processor.sink();
         this.serviceMediator = new ServiceMediator(this);
 
         registerInternalListener();
@@ -90,8 +94,7 @@ public class EventManager {
         log.debug("Dispatching event of type {} with id {}.", event.getClass().getSimpleName(), event.getEventId());
 
         // publish event
-        Mono<Event> monoEvent = Mono.just(event);
-        monoEvent.subscribeWith(processor).subscribe();
+        eventSink.next(event);
     }
 
     /**
