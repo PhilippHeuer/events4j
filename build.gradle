@@ -9,7 +9,7 @@ plugins {
 
 group 'com.github.philippheuer.events4j'
 description = 'A simple event dispatcher / consumer library.'
-version = System.getenv('CI_COMMIT_REF_NAME')
+version = String.valueOf(System.getenv("CI_COMMIT_REF_NAME")).replace("v", "")
 
 sourceCompatibility = 1.8
 

@@ -54,7 +54,7 @@ public class EventManager {
      */
     public EventManager() {
         this.scheduler = Schedulers.elastic();
-        this.processor = EmitterProcessor.create(false);
+        this.processor = EmitterProcessor.create(256);
         this.eventSink = processor.sink();
         this.serviceMediator = new ServiceMediator(this);
 
@@ -123,7 +123,6 @@ public class EventManager {
     private void registerInternalListener() {
         // Annotation-based EventListener
         onEvent(Event.class).subscribe(event -> {
-            log.debug("Passed event [{}] to the method based annotation manager at {}.", event.getEventId(), event.getFiredAt().toInstant().toString());
             annotationEventManager.dispatch(event);
         });
     }
