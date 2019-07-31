@@ -151,6 +151,7 @@ public class EventManager {
         // Annotation-based EventListener
         if (!annotationEventManagerState) {
             onEvent(Event.class).subscribe(annotationEventManager::dispatch);
+            annotationEventManagerState = true;
         } else {
             log.warn("Annotation-based event manager is already enabled!");
         }
