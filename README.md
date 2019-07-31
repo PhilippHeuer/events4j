@@ -71,6 +71,12 @@ eventManager.onEvent(TestEvent.class).subscribe(event -> {
 
 #### Annotation-based
 
+If you want to use annotation-based events, you need to enable this feature. Annotation-based event consumers are disabled by default.
+
+```java
+eventManager.enableAnnotationBasedEvents();
+```
+
 *The Consumer*
 ```java
 public class TestEventListener {

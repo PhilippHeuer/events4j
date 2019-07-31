@@ -3,8 +3,8 @@ plugins {
     id 'idea'
     id 'eclipse'
     id 'maven-publish'
-    id 'com.jfrog.bintray' version '1.8.0'
-    id 'io.spring.dependency-management' version '1.0.5.RELEASE'
+    id 'com.jfrog.bintray' version '1.8.4'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 }
 
 group 'com.github.philippheuer.events4j'
@@ -19,26 +19,32 @@ repositories {
 
 dependencyManagement {
     imports {
-        mavenBom "io.projectreactor:reactor-bom:Bismuth-RELEASE"
+        mavenBom "io.projectreactor:reactor-bom:Californium-RELEASE"
     }
 }
 
 dependencies {
     // SLF4J API
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
 
     // Project Reactor
     compile group: 'io.projectreactor', name: 'reactor-core'
 
+    // Micrometer
+    compile group: 'io.micrometer', name: 'micrometer-core', version: '1.2.0'
+    
     // Testing
+    // - Reactor
+    testCompile group: 'io.projectreactor', name: 'reactor-test'
     // - jUnit
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.5.1'
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.5.1'
     // - Logging
-    testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.13'
+    testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
     
     // Getter & Setter
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.16.20'
-    testCompile group: 'org.projectlombok', name: 'lombok', version: '1.16.20'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.8'
+    testCompile group: 'org.projectlombok', name: 'lombok', version: '1.18.8'
 }
 
 /**

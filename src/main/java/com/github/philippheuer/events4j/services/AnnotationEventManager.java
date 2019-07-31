@@ -18,6 +18,15 @@ public class AnnotationEventManager {
     private final ConcurrentHashMap<Class<?>, ConcurrentHashMap<Method, CopyOnWriteArrayList<Object>>> methodListeners = new ConcurrentHashMap<>();
 
     /**
+     * Returns true or false, depending if any listeners are registered or not.
+     *
+     * @return Boolean
+     */
+    public boolean hasListeners() {
+        return methodListeners.size() > 0;
+    }
+
+    /**
      * Registers a listener using {@link EventSubscriber} method annotations.
      *
      * @param eventListener The class instance annotated with {@link EventSubscriber} annotations.
@@ -72,7 +81,11 @@ public class AnnotationEventManager {
      *
      * @param event The event that will be dispatched to the annotation based method listeners.
      */
-    public synchronized void dispatch(Event event) {
+    public void dispatch(Event event) {
+        // end if no listeners are registered
+        if (!hasListeners())
+            return;
+
         // Call Method Listeners
         methodListeners.entrySet().stream()
             .filter(e -> e.getKey().isAssignableFrom(event.getClass()))

@@ -1,10 +1,13 @@
 package com.github.philippheuer.events4j;
 
 import com.github.philippheuer.events4j.domain.TestEvent;
-import com.github.philippheuer.events4j.util.EventManagerTestUtil;
 import com.github.philippheuer.events4j.util.TestEventListener;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import reactor.core.publisher.FluxSink;
+import reactor.core.publisher.TopicProcessor;
+import reactor.core.scheduler.Schedulers;
 
 /**
  * EventManager Unit Tests
@@ -17,12 +20,37 @@ import org.junit.Test;
 public class EventManagerTest {
 
     /**
+     * Initialize a EventManager Instance
+     */
+    private EventManager getEventManager() {
+        return new EventManager(
+                Schedulers.newParallel("events4j-scheduler", Runtime.getRuntime().availableProcessors() * 2),
+                TopicProcessor.create("events4j-processor", 16),
+                FluxSink.OverflowStrategy.BUFFER);
+    }
+
+    /**
+     * Wait until all events are processed before running the next test
+     */
+    private void waitUntilAllEventsAreProcessed(EventManager eventManager) {
+        // wait until all events have been processed
+        while (((TopicProcessor) eventManager.getProcessor()).getPending() > 0) {
+            try {
+                Thread.sleep(1000);
+                log.debug("Event queue not empty [{}], waiting ...", ((TopicProcessor) eventManager.getProcessor()).getPending());
+            } catch (Exception ex) {
+                // nothing
+            }
+        }
+    }
+
+    /**
      * Tests if events can be dispatched
      */
     @Test
+    @Disabled
     public void testOnEventConsumer() {
-        // Prepare
-        EventManager eventManager = EventManagerTestUtil.getEventManager();
+        EventManager eventManager = getEventManager();
 
         // Consumer
         eventManager.onEvent(TestEvent.class).subscribe(event -> {
@@ -38,9 +66,9 @@ public class EventManagerTest {
      * Tests if events can be dispatched
      */
     @Test
+    @Disabled
     public void testMethodAnnotationEventConsumer() {
-        // Prepare
-        EventManager eventManager = EventManagerTestUtil.getEventManager();
+        EventManager eventManager = getEventManager();
 
         // Register Consumer
         eventManager.registerListener(new TestEventListener());
