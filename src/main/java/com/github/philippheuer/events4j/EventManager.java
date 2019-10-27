@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.*;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
+import reactor.util.concurrent.WaitStrategy;
 
 import java.util.Calendar;
 import java.util.UUID;
@@ -67,7 +68,11 @@ public class EventManager {
      */
     public EventManager() {
         this.scheduler = Schedulers.newParallel("events4j-scheduler", Runtime.getRuntime().availableProcessors() * 2);
-        this.processor = TopicProcessor.create("events4j-processor", 8192);
+        this.processor = TopicProcessor.<Event>builder()
+                .name("events4j-processor")
+                .waitStrategy(WaitStrategy.sleeping())
+                .bufferSize(8192)
+                .build();
         this.eventSink = processor.sink(FluxSink.OverflowStrategy.BUFFER); // will be handled in dispatchEvent
         this.serviceMediator = new ServiceMediator(this);
     }
@@ -106,13 +111,13 @@ public class EventManager {
         if (pendingEvents >= bufferSize) {
             metricsRegistry.counter("events4j.drop", "category", event.getClass().getSuperclass() != null ? event.getClass().getSuperclass().getSimpleName() : null, "name", event.getClass().getSimpleName()).increment();
             log.error("{}/{} events in queue. New event {} was rejected!", pendingEvents, bufferSize, event.toString());
-            throw new EventBufferOverflowException("Event Buffer Overflow, your processors can't keep up with generated events!");
-        } else if (pendingEvents > bufferSize * 0.6) {
-            log.warn("{} events in queue to get processed. {} is the hard limit, after which new events will be rejected!", pendingEvents, bufferSize);
+            throw new EventBufferOverflowException("Event Buffer Overflow, your processors can't keep up with generated events! A event has been dropped and will not be processed.");
         }
 
         // log event dispatch
-        log.debug("Dispatching event of type {} with id {}.", event.getClass().getSimpleName(), event.getEventId());
+        if (log.isDebugEnabled()) {
+            log.debug("Dispatching event of type {} with id {}.", event.getClass().getSimpleName(), event.getEventId());
+        }
         metricsRegistry.counter("events4j.process", "category", event.getClass().getSuperclass() != null ? event.getClass().getSuperclass().getSimpleName() : null, "name", event.getClass().getSimpleName()).increment();
 
         // publish event
