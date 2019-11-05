@@ -4,6 +4,7 @@ plugins {
     id 'eclipse'
     id 'maven-publish'
     id 'com.jfrog.bintray' version '1.8.4'
+    id 'com.jfrog.artifactory' version '4.8.1'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 }
 
@@ -11,103 +12,74 @@ group 'com.github.philippheuer.events4j'
 description = 'A simple event dispatcher / consumer library.'
 version = String.valueOf(System.getenv("CI_COMMIT_REF_NAME")).replace("v", "")
 
-sourceCompatibility = 1.8
+// All-Projects
+allprojects {
+    // Repositories
+    repositories {
+        jcenter()
+        maven { url "https://dl.bintray.com/philippheuer/maven" }
+    }
 
-repositories {
-    jcenter()
-}
-
-dependencyManagement {
-    imports {
-        mavenBom "io.projectreactor:reactor-bom:Californium-RELEASE"
+    // Artifact Info
+    project.ext {
+        groupId = 'com.github.philippheuer.events4j'
+        artifactNamespace = 'philippheuer'
+        artifactName = 'events4j'
+        artifactVersion = String.valueOf(System.getenv("CI_COMMIT_REF_NAME")).replace("v", "") + (Boolean.valueOf(System.getProperty("snapshot")) ? "-SNAPSHOT" : "")
+        artifactDescription = 'Events4J'
+        websiteUrl = 'https://github.com/philippheuer/events4j'
+        issueTrackerUrl = 'https://github.com/philippheuer/events4j/issues'
+        vcsUrl = 'https://github.com/philippheuer/events4j.git'
     }
 }
 
-dependencies {
-    // SLF4J API
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
+// Subprojects
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
+    apply plugin: 'maven-publish'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'com.jfrog.bintray'
+    apply plugin: 'com.jfrog.artifactory'
 
-    // Project Reactor
-    compile group: 'io.projectreactor', name: 'reactor-core'
+    // Source Compatiblity
+    sourceCompatibility = 1.8
 
-    // Micrometer
-    compile group: 'io.micrometer', name: 'micrometer-core', version: '1.2.0'
-    
-    // Testing
-    // - Reactor
-    testCompile group: 'io.projectreactor', name: 'reactor-test'
-    // - jUnit
-    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.5.1'
-    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.5.1'
-    // - Logging
-    testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
-    
-    // Getter & Setter
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.8'
-    testCompile group: 'org.projectlombok', name: 'lombok', version: '1.18.8'
-}
+    // Dependency Management for Subprojects
+    dependencyManagement {
+        imports {
+            mavenBom "io.projectreactor:reactor-bom:Californium-RELEASE"
+        }
+        dependencies {
+            // Logging
+            dependency group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
+            dependency group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
 
-/**
- * Sources - build a jar with source files
- */
-task sourcesJar(type: Jar, dependsOn: classes, description: 'Builds the sourcesJar.', group: 'build') {
-    from sourceSets.main.allSource
-    classifier = 'sources'
-}
+            // Testing
+            dependency group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.3.1'
+            dependency group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.3.1'
 
-// build a jar with javadoc
-task javadocJar(type: Jar, dependsOn: javadoc, description: 'Builds the javadocJar.', group: 'build') {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-/**
- * Artifacts
- */
-artifacts {
-    archives sourcesJar
-    archives javadocJar
-}
-
-/**
- * Deployment
- */
-publishing {
-    publications {
-        mainProject(MavenPublication) {
-            from project.components.java
-            artifact sourcesJar
-            artifact javadocJar
-            groupId project.group
-            artifactId project.name
-            version project.version
+            // Lombok
+            dependency group: 'org.projectlombok', name: 'lombok', version: '1.18.2'
         }
     }
-}
 
-/**
- * Bintray Upload
- */
-bintray {
-    user = System.getenv('BINTRAY_USER')
-    key = System.getenv('BINTRAY_API_KEY')
-    publications = ['mainProject']
-    dryRun = false
-    publish = true
-    pkg {
-        // jcenter repository namespace and name
-        userOrg = String.valueOf(System.getenv('CI_PROJECT_NAMESPACE')).toLowerCase()
-        repo = 'maven'
-        name =  String.valueOf(project.name).toLowerCase()
-        desc = project.description
-        licenses = ['MIT']
-        vcsUrl = System.getenv('CI_REPOSITORY_URL')
-        labels = []
-        publicDownloadNumbers = true
-        version {
-            name = String.valueOf(project.version).replace("v", "")
-            vcsTag = project.version
-            released  = new Date()
+    // Common Dependencies
+    plugins.withType(JavaPlugin) {
+        dependencies {
+            // Logging
+            compile group: 'org.slf4j', name: 'slf4j-api'
+            testCompile group: 'ch.qos.logback', name: 'logback-classic'
+
+            // Test
+            testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api'
+            testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
+
+            // Getter & Setter
+            compileOnly group: 'org.projectlombok', name: 'lombok'
+            testCompile group: 'org.projectlombok', name: 'lombok'
+            annotationProcessor group: 'org.projectlombok', name: 'lombok'
         }
     }
 }

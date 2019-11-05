@@ -1,0 +1,19 @@
+// In this section you declare the dependencies for your production and test code
+dependencies {
+	// Modules
+	compile project(':' + rootProject.name + '-api')
+	compile project(':' + rootProject.name + '-core')
+	
+	// Spring
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.2.1.RELEASE'
+
+}
+
+// Artifact Info
+project.ext {
+	artifactName = 'Events4J-Spring'
+	artifactDescription = 'Events4J - Spring'
+}
+
+// Deployment Script
+apply from: '../deployment.gradle'

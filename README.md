@@ -47,14 +47,18 @@ compile 'com.github.philippheuer.events4j:events4j:0.5.0'
 ## Initialization
 
 ```java
+// new instance
 EventManager eventManager = new EventManager();
+
+// register modules automatically
+eventManager.autoDiscovery();
 ```
 
 ## Event Producer
 
 ```java
 TestEvent testEvent = new TestEvent();
-eventManager.dispatchEvent(testEvent);
+eventManager.publish(testEvent);
 ```
 
 ## Event Consumer
@@ -62,7 +66,14 @@ eventManager.dispatchEvent(testEvent);
 #### Subscriber-based
 
 ```java
-eventManager.onEvent(TestEvent.class).subscribe(event -> {
+IEventManager eventManager = new EventManager();
+ReactorEventHandler reactorEventHandler = new ReactorEventHandler(eventManager);
+eventManager.registerEventHandler(reactorEventHandler);
+```
+
+The Consumer
+```java
+reactorEventHandler.onEvent(TestEvent.class).subscribe(event -> {
     log.info("Received event [{}] that was fired at {}.",
         event.getEventId(),
         event.getFiredAt().toInstant().toString());
@@ -74,7 +85,9 @@ eventManager.onEvent(TestEvent.class).subscribe(event -> {
 If you want to use annotation-based events, you need to enable this feature. Annotation-based event consumers are disabled by default.
 
 ```java
-eventManager.enableAnnotationBasedEvents();
+IEventManager eventManager = new EventManager();
+AnnotationEventHandler annotationEventHandler = new AnnotationEventHandler();
+eventManager.registerEventHandler(annotationEventHandler);
 ```
 
 *The Consumer*
@@ -92,6 +105,23 @@ public class TestEventListener {
 *Register the Consumer*
 ```java
 eventManager.registerListener(new TestEventListener());
+```
+
+#### Spring Events
+
+Include the Events4J-Spring Dependency and use spring properties to configure the handler:
+
+```yaml
+events4j.handler.spring.enabled: true
+```
+
+*The Consumer*
+
+```java
+@EventListener
+public void handleContextStart(TestEvent testEvent) {
+    System.out.println("Spring Event received.");
+}
 ```
 
 ## License
