@@ -80,6 +80,7 @@ subprojects {
             compileOnly group: 'org.projectlombok', name: 'lombok'
             testCompile group: 'org.projectlombok', name: 'lombok'
             annotationProcessor group: 'org.projectlombok', name: 'lombok'
+            testAnnotationProcessor group: 'org.projectlombok', name: 'lombok'
         }
     }
 }

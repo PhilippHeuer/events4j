@@ -5,7 +5,7 @@ import com.github.philippheuer.events4j.api.domain.IEvent;
 import com.github.philippheuer.events4j.api.service.IEventHandler;
 import com.github.philippheuer.events4j.api.service.IServiceMediator;
 
-public interface IEventManager {
+public interface IEventManager extends AutoCloseable {
 
     /**
      * Publish a Event
@@ -28,8 +28,4 @@ public interface IEventManager {
      */
     IServiceMediator getServiceMediator();
 
-    /**
-     * Close
-     */
-    void close();
 }

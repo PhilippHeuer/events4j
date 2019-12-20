@@ -130,20 +130,19 @@ public class EventManager implements IEventManager {
     }
 
     /**
-     * Retrieves a {@link reactor.core.publisher.Flux} of the given event type. Also makes sure that the subscriber only gets one event at a time, unless specified otherwise.
+     * Retrieves a EventHandler of the provided type
      *
-     * @param eventClass the event class to obtain events from
-     * @param <E> the eventType
-     * @return a new {@link reactor.core.publisher.Flux} of the given eventType
+     * @param eventHandlerClass the event class to obtain events from
+     * @param <E> the eventHandler type
+     * @return a reference to the requested event handler
      */
-    public <E extends IEvent> Disposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
-        Optional<ReactorEventHandler> reactorEventHandler = getEventHandlers().stream().filter(h -> h instanceof ReactorEventHandler).map(h -> (ReactorEventHandler) h).findFirst();
-
-        if (reactorEventHandler.isPresent()) {
-            return reactorEventHandler.get().onEvent(eventClass, consumer);
-        } else {
-            throw new RuntimeException("ReactorEventHandler needed for onEvent!");
+    public <E> E getEventHandler(Class<E> eventHandlerClass) {
+        Optional<E> eventHandler = getEventHandlers().stream().filter(h -> h.getClass().getName().equalsIgnoreCase(eventHandlerClass.getName())).map(h -> (E) h).findFirst();
+        if (eventHandler.isPresent()) {
+            return eventHandler.get();
         }
+
+        throw new RuntimeException("No eventHandler of type " + eventHandlerClass.getName() + " is registered!");
     }
 
     /**
@@ -151,7 +150,13 @@ public class EventManager implements IEventManager {
      */
     public void close() {
         isStopped = true;
-        eventHandlers.forEach(eventHandler -> eventHandler.close());
+        eventHandlers.forEach(eventHandler -> {
+            try {
+                eventHandler.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
     }
 
 }

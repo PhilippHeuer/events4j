@@ -15,7 +15,7 @@ public class AnnotationEventHandlerTest {
      * Tests if events can be dispatched
      */
     @Test
-    public void testAnnotationWithTestEvent() {
+    public void testAnnotationHandlerWithTestEvent() throws Exception {
         IEventManager eventManager = new EventManager();
         AnnotationEventHandler annotationEventHandler = new AnnotationEventHandler();
         eventManager.registerEventHandler(annotationEventHandler);
@@ -32,7 +32,7 @@ public class AnnotationEventHandlerTest {
         Assertions.assertEquals(1, testEventHandler.eventsProcessed, "check that one event was processed");
 
         // Shutdown
-        eventManager.shutdown();
+        eventManager.close();
     }
 
 }

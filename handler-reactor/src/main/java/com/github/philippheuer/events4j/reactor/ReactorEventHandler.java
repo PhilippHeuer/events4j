@@ -81,7 +81,8 @@ public class ReactorEventHandler implements IEventHandler {
      * Retrieves a {@link reactor.core.publisher.Flux} of the given event type. Also makes sure that the subscriber only gets one event at a time, unless specified otherwise.
      *
      * @param eventClass the event class to obtain events from
-     * @param <E> the eventType
+     * @param consumer the event consumer / handler method
+     * @param <E> the event type
      * @return a new {@link reactor.core.publisher.Flux} of the given eventType
      */
     public <E extends IEvent> Disposable onEvent(Class<E> eventClass, Consumer<E> consumer) {

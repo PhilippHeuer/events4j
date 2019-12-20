@@ -30,7 +30,6 @@ public class ReactorEventHandlerTest {
         eventManager.registerEventHandler(reactorEventHandler);
 
         // Register Listener
-        boolean triggered = false;
         reactorEventHandler.onEvent(TestEvent.class, event -> {
             log.info("Received event [{}] that was fired at {}.", event.getEventId(), event.getFiredAt().toInstant().toString());
         });
@@ -39,12 +38,11 @@ public class ReactorEventHandlerTest {
         TestEvent testEvent = new TestEvent();
         eventManager.publish(testEvent);
 
-        // wait a moment
-        Thread.sleep(5000);
+        // wait a second
+        Thread.sleep(1000);
 
         // shutdown
         eventManager.close();
-
     }
 
 }
