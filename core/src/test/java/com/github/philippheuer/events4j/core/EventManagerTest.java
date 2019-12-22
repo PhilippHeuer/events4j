@@ -29,6 +29,11 @@ public class EventManagerTest {
         Assertions.assertNotNull(eventHandler, "should fine a eventHandler for class AnnotationEventHandler");
     }
 
+    @Test
+    public void testHasEventHandlerByClass() {
+        Assertions.assertTrue(eventManager.hasEventHandler(AnnotationEventHandler.class), "should fine a eventHandler for class AnnotationEventHandler");
+    }
+
     @AfterAll
     public static void shutdownEventManager() {
         eventManager.close();

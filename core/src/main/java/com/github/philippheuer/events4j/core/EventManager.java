@@ -130,9 +130,20 @@ public class EventManager implements IEventManager {
     }
 
     /**
+     * Checks if a fiven eventHandler is registered / present
+     *
+     * @param eventHandlerClass the event handler class
+     * @return boolean
+     */
+    public boolean hasEventHandler(Class eventHandlerClass) {
+        Optional<IEventHandler> eventHandler = getEventHandlers().stream().filter(h -> h.getClass().getName().equalsIgnoreCase(eventHandlerClass.getName())).findFirst();
+        return eventHandler.isPresent();
+    }
+
+    /**
      * Retrieves a EventHandler of the provided type
      *
-     * @param eventHandlerClass the event class to obtain events from
+     * @param eventHandlerClass the event handler class
      * @param <E> the eventHandler type
      * @return a reference to the requested event handler
      */
