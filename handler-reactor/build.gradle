@@ -12,7 +12,7 @@ dependencies {
 
 // Artifact Info
 project.ext {
-	artifactName = 'Events4J-Reactor'
+	artifactName = 'Events4J-Handler-Reactor'
 	artifactDescription = 'Events4J - Reactor'
 }
 

@@ -11,7 +11,7 @@ dependencies {
 
 // Artifact Info
 project.ext {
-	artifactName = 'Events4J-Spring'
+	artifactName = 'Events4J-Handler-Spring'
 	artifactDescription = 'Events4J - Spring'
 }
 

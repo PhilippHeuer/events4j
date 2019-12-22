@@ -2,10 +2,10 @@ plugins {
     id 'java'
     id 'idea'
     id 'eclipse'
-    id 'maven-publish'
-    id 'com.jfrog.bintray' version '1.8.4'
-    id 'com.jfrog.artifactory' version '4.8.1'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'maven-publish'
+    id 'com.jfrog.bintray' version '1.8.4' apply false
+    id 'com.jfrog.artifactory' version '4.8.1' apply false
 }
 
 group 'com.github.philippheuer.events4j'

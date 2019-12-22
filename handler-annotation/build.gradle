@@ -7,7 +7,7 @@ dependencies {
 
 // Artifact Info
 project.ext {
-	artifactName = 'Events4J-Annotation'
+	artifactName = 'Events4J-Handler-Annotation'
 	artifactDescription = 'Events4J - Annotation-based event handler'
 }
 
