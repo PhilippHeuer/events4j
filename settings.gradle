@@ -1,4 +1,4 @@
-include 'api', 'core', 'handler-reactor', 'handler-annotation', 'handler-spring'
+include 'api', 'core', 'handler-reactor', 'handler-simple', 'handler-spring'
 
 rootProject.name = 'events4j'
 rootProject.children.each {

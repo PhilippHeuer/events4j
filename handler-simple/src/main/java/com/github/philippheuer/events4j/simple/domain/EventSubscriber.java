@@ -1,4 +1,4 @@
-package com.github.philippheuer.events4j.annotation.domain;
+package com.github.philippheuer.events4j.simple.domain;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

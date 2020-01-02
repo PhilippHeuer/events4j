@@ -1,6 +1,6 @@
 package com.github.philippheuer.events4j.core;
 
-import com.github.philippheuer.events4j.annotation.AnnotationEventHandler;
+import com.github.philippheuer.events4j.simple.SimpleEventHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -25,13 +25,13 @@ public class EventManagerTest {
 
     @Test
     public void testGetEventHandlerByClass() {
-        AnnotationEventHandler eventHandler = eventManager.getEventHandler(AnnotationEventHandler.class);
-        Assertions.assertNotNull(eventHandler, "should fine a eventHandler for class AnnotationEventHandler");
+        SimpleEventHandler eventHandler = eventManager.getEventHandler(SimpleEventHandler.class);
+        Assertions.assertNotNull(eventHandler, "should fine a eventHandler for class SimpleEventHandler");
     }
 
     @Test
     public void testHasEventHandlerByClass() {
-        Assertions.assertTrue(eventManager.hasEventHandler(AnnotationEventHandler.class), "should fine a eventHandler for class AnnotationEventHandler");
+        Assertions.assertTrue(eventManager.hasEventHandler(SimpleEventHandler.class), "should fine a eventHandler for class SimpleEventHandler");
     }
 
     @AfterAll

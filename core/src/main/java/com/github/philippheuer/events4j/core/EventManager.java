@@ -1,6 +1,6 @@
 package com.github.philippheuer.events4j.core;
 
-import com.github.philippheuer.events4j.annotation.AnnotationEventHandler;
+import com.github.philippheuer.events4j.simple.SimpleEventHandler;
 import com.github.philippheuer.events4j.api.domain.IEvent;
 import com.github.philippheuer.events4j.api.service.IEventHandler;
 import com.github.philippheuer.events4j.api.IEventManager;
@@ -11,12 +11,9 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.Disposable;
-import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * The EventManager
@@ -79,13 +76,13 @@ public class EventManager implements IEventManager {
         // Annotation
         try {
             // check if class is present
-            Class.forName("com.github.philippheuer.events4j.annotation.AnnotationEventHandler");
+            Class.forName("com.github.philippheuer.events4j.simple.SimpleEventHandler");
 
-            log.info("Auto Discovery: AnnotationEventHandler registered!");
-            AnnotationEventHandler annotationEventHandler = new AnnotationEventHandler();
-            registerEventHandler(annotationEventHandler);
+            log.info("Auto Discovery: SimpleEventHandler registered!");
+            SimpleEventHandler simpleEventHandler = new SimpleEventHandler();
+            registerEventHandler(simpleEventHandler);
         } catch (ClassNotFoundException ex) {
-            log.debug("Auto Discovery: AnnotationEventHandler not available!");
+            log.debug("Auto Discovery: SimpleEventHandler not available!");
         }
 
         // Reactor
@@ -108,7 +105,7 @@ public class EventManager implements IEventManager {
      */
     public void publish(IEvent event) {
         // metrics
-        metricsRegistry.counter("events4j.process", "category", event.getClass().getSuperclass() != null ? event.getClass().getSuperclass().getSimpleName() : null, "name", event.getClass().getSimpleName()).increment();
+        metricsRegistry.counter("events4j.published", "name", event.getClass().getSimpleName()).increment();
 
         // inject serviceMediator
         if (event.getServiceMediator() == null) {
@@ -122,7 +119,7 @@ public class EventManager implements IEventManager {
 
         // check for stop
         if (isStopped) {
-            log.error("Event scheduler stopped, dropped event [{}]!", event.getEventId());
+            log.warn("Event scheduler stopped, dropped event [{}]!", event.getEventId());
         }
 
         // dispatch event to each handler

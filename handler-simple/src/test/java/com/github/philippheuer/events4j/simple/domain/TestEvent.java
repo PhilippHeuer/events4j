@@ -1,4 +1,4 @@
-package com.github.philippheuer.events4j.annotation.domain;
+package com.github.philippheuer.events4j.simple.domain;
 
 import com.github.philippheuer.events4j.core.domain.Event;
 
@@ -11,12 +11,12 @@ import com.github.philippheuer.events4j.core.domain.Event;
  */
 public class TestEvent extends Event {
 
-    public static Integer id = 0;
+    public static Integer count = 0;
 
     public TestEvent() {
         super();
-        id = id + 1;
-        this.setEventId(id.toString());
+        count = count + 1;
+        this.setEventId(count.toString());
     }
 
 }

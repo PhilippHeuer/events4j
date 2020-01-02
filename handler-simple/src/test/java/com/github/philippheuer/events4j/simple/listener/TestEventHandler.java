@@ -1,7 +1,7 @@
-package com.github.philippheuer.events4j.annotation.listener;
+package com.github.philippheuer.events4j.simple.listener;
 
-import com.github.philippheuer.events4j.annotation.domain.EventSubscriber;
-import com.github.philippheuer.events4j.annotation.domain.TestEvent;
+import com.github.philippheuer.events4j.simple.domain.EventSubscriber;
+import com.github.philippheuer.events4j.simple.domain.TestEvent;
 
 public class TestEventHandler {
 

@@ -80,14 +80,14 @@ reactorEventHandler.onEvent(TestEvent.class).subscribe(event -> {
 });
 ```
 
-#### Annotation-based
+#### Simple
 
 If you want to use annotation-based events, you need to enable this feature. Annotation-based event consumers are disabled by default.
 
 ```java
 IEventManager eventManager = new EventManager();
-AnnotationEventHandler annotationEventHandler = new AnnotationEventHandler();
-eventManager.registerEventHandler(annotationEventHandler);
+SimpleEventHandler simpleEventHandler = new SimpleEventHandler();
+eventManager.registerEventHandler(simpleEventHandler);
 ```
 
 *The Consumer*

@@ -28,4 +28,21 @@ public interface IEventManager extends AutoCloseable {
      */
     IServiceMediator getServiceMediator();
 
+    /**
+     * Checks if a fiven eventHandler is registered / present
+     *
+     * @param eventHandlerClass the event handler class
+     * @return boolean
+     */
+    boolean hasEventHandler(Class eventHandlerClass);
+
+    /**
+     * Retrieves a EventHandler of the provided type
+     *
+     * @param eventHandlerClass the event handler class
+     * @param <E> the eventHandler type
+     * @return a reference to the requested event handler
+     */
+    <E> E getEventHandler(Class<E> eventHandlerClass);
+
 }
