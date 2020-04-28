@@ -1,9 +1,9 @@
 package com.github.philippheuer.events4j.simple;
 
 import com.github.philippheuer.events4j.api.domain.IDisposable;
-import com.github.philippheuer.events4j.simple.domain.EventSubscriber;
 import com.github.philippheuer.events4j.api.domain.IEvent;
 import com.github.philippheuer.events4j.api.service.IEventHandler;
+import com.github.philippheuer.events4j.simple.domain.EventSubscriber;
 import com.github.philippheuer.events4j.simple.domain.SimpleEventHandlerSubscription;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -43,8 +43,8 @@ public class SimpleEventHandler implements IEventHandler {
      * Registers a new consumer based event handler
      *
      * @param eventClass the event class to obtain events from
-     * @param consumer the event consumer / handler method
-     * @param <E> the event type
+     * @param consumer   the event consumer / handler method
+     * @param <E>        the event type
      * @return a new Disposable of the given eventType
      */
     public <E extends IEvent> IDisposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
@@ -63,7 +63,7 @@ public class SimpleEventHandler implements IEventHandler {
      * Registers a new event listener.
      *
      * @param eventListenerClass The class of the listener.
-     * @param eventListener The class instance of the listener.
+     * @param eventListener      The class instance of the listener.
      */
     private void registerListener(Class<?> eventListenerClass, Object eventListener) {
         // for each method on the event listener class

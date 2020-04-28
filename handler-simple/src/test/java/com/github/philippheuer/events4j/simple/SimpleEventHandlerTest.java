@@ -1,12 +1,15 @@
 package com.github.philippheuer.events4j.simple;
 
+import com.github.philippheuer.events4j.api.IEventManager;
 import com.github.philippheuer.events4j.api.domain.IDisposable;
 import com.github.philippheuer.events4j.core.EventManager;
-import com.github.philippheuer.events4j.api.IEventManager;
 import com.github.philippheuer.events4j.simple.domain.TestEvent;
 import com.github.philippheuer.events4j.simple.listener.TestEventHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 @Slf4j
 public class SimpleEventHandlerTest {
@@ -31,7 +34,7 @@ public class SimpleEventHandlerTest {
 
         // Consumer based handler
         IDisposable disposable = eventManager.getEventHandler(SimpleEventHandler.class).onEvent(TestEvent.class, testEvent -> {
-             eventsHandled = eventsHandled + 1;
+            eventsHandled = eventsHandled + 1;
         });
 
         // Dispatch

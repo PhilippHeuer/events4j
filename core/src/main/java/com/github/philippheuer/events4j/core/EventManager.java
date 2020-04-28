@@ -1,12 +1,12 @@
 package com.github.philippheuer.events4j.core;
 
-import com.github.philippheuer.events4j.simple.SimpleEventHandler;
+import com.github.philippheuer.events4j.api.IEventManager;
 import com.github.philippheuer.events4j.api.domain.IEvent;
 import com.github.philippheuer.events4j.api.service.IEventHandler;
-import com.github.philippheuer.events4j.api.IEventManager;
 import com.github.philippheuer.events4j.api.service.IServiceMediator;
 import com.github.philippheuer.events4j.core.services.ServiceMediator;
 import com.github.philippheuer.events4j.reactor.ReactorEventHandler;
+import com.github.philippheuer.events4j.simple.SimpleEventHandler;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
 import lombok.Getter;
@@ -141,7 +141,7 @@ public class EventManager implements IEventManager {
      * Retrieves a EventHandler of the provided type
      *
      * @param eventHandlerClass the event handler class
-     * @param <E> the eventHandler type
+     * @param <E>               the eventHandler type
      * @return a reference to the requested event handler
      */
     public <E> E getEventHandler(Class<E> eventHandlerClass) {

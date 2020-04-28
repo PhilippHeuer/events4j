@@ -5,7 +5,7 @@ public interface IServiceMediator {
     /**
      * Add a service to the ServiceMediator.
      *
-     * @param serviceName The ServiceName
+     * @param serviceName     The ServiceName
      * @param serviceInstance The ServiceInstance
      */
     void addService(String serviceName, Object serviceInstance);
@@ -14,8 +14,8 @@ public interface IServiceMediator {
      * Gets a service from the ServiceMediator
      *
      * @param serviceClass The ServiceClass you expect
-     * @param serviceName The ServiceName
-     * @param <T> The type of the Service
+     * @param serviceName  The ServiceName
+     * @param <T>          The type of the Service
      * @return The ServiceInstance
      */
     <T extends Object> T getService(Class<T> serviceClass, String serviceName);

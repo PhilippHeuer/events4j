@@ -41,7 +41,7 @@ public final class ServiceMediator implements IServiceMediator {
     /**
      * Add a service to the ServiceMediator.
      *
-     * @param serviceName The ServiceName
+     * @param serviceName     The ServiceName
      * @param serviceInstance The ServiceInstance
      */
     public void addService(String serviceName, Object serviceInstance) {
@@ -52,8 +52,8 @@ public final class ServiceMediator implements IServiceMediator {
      * Gets a service from the ServiceMediator
      *
      * @param serviceClass The ServiceClass you expect
-     * @param serviceName The ServiceName
-     * @param <T> The type of the Service
+     * @param serviceName  The ServiceName
+     * @param <T>          The type of the Service
      * @return The ServiceInstance
      */
     public <T extends Object> T getService(Class<T> serviceClass, String serviceName) {

@@ -3,7 +3,6 @@ package com.github.philippheuer.events4j.reactor;
 import com.github.philippheuer.events4j.api.IEventManager;
 import com.github.philippheuer.events4j.core.EventManager;
 import com.github.philippheuer.events4j.reactor.domain.TestEvent;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;

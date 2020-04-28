@@ -5,7 +5,10 @@ import com.github.philippheuer.events4j.api.service.IEventHandler;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.Disposable;
-import reactor.core.publisher.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.FluxProcessor;
+import reactor.core.publisher.FluxSink;
+import reactor.core.publisher.TopicProcessor;
 import reactor.core.scheduler.Scheduler;
 import reactor.scheduler.forkjoin.ForkJoinPoolScheduler;
 import reactor.util.concurrent.WaitStrategy;
@@ -57,8 +60,8 @@ public class ReactorEventHandler implements IEventHandler {
     /**
      * Constructor to provide a custom processor / scheduler to the ReactorEventHandler
      *
-     * @param scheduler The scheduler provides some guarantees required by Reactive Streams flows like FIFO execution
-     * @param processor Used to bridge gateway events to the subscribers
+     * @param scheduler        The scheduler provides some guarantees required by Reactive Streams flows like FIFO execution
+     * @param processor        Used to bridge gateway events to the subscribers
      * @param overflowStrategy Safely gates a multi-threaded producer.
      */
     public ReactorEventHandler(Scheduler scheduler, FluxProcessor<IEvent, IEvent> processor, FluxSink.OverflowStrategy overflowStrategy) {
@@ -81,8 +84,8 @@ public class ReactorEventHandler implements IEventHandler {
      * Retrieves a {@link reactor.core.publisher.Flux} of the given event type. Also makes sure that the subscriber only gets one event at a time, unless specified otherwise.
      *
      * @param eventClass the event class to obtain events from
-     * @param consumer the event consumer / handler method
-     * @param <E> the event type
+     * @param consumer   the event consumer / handler method
+     * @param <E>        the event type
      * @return a new {@link reactor.core.publisher.Flux} of the given eventType
      */
     public <E extends IEvent> Disposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
