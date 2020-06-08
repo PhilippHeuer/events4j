@@ -9,10 +9,10 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
@@ -23,12 +23,12 @@ public class SimpleEventHandler implements IEventHandler {
      * Consumer based handlers
      */
     @Getter
-    private final ConcurrentHashMap<String, List<Consumer>> consumerBasedHandlers = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Class<? extends IEvent>, List<Consumer>> consumerBasedHandlers = new ConcurrentHashMap<>();
 
     /**
      * Annotation based method listeners
      */
-    private final ConcurrentHashMap<Class<?>, ConcurrentHashMap<Method, CopyOnWriteArrayList<Object>>> methodListeners = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Class<? extends IEvent>, ConcurrentMap<Method, List<Object>>> methodListeners = new ConcurrentHashMap<>();
 
     /**
      * Registers a listener using {@link EventSubscriber} method annotations.
@@ -48,15 +48,12 @@ public class SimpleEventHandler implements IEventHandler {
      * @return a new Disposable of the given eventType
      */
     public <E extends IEvent> IDisposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
-        if (!consumerBasedHandlers.containsKey(eventClass.getCanonicalName())) {
-            consumerBasedHandlers.put(eventClass.getCanonicalName(), new ArrayList<>());
-        }
-
         // register
-        consumerBasedHandlers.get(eventClass.getCanonicalName()).add(consumer);
+        final List<Consumer> eventHandlers = consumerBasedHandlers.computeIfAbsent(eventClass, s -> new CopyOnWriteArrayList<>());
+        eventHandlers.add(consumer);
 
         // return disposable
-        return new SimpleEventHandlerSubscription(this, eventClass, consumer);
+        return new SimpleEventHandlerSubscription<>(this, eventClass, consumer);
     }
 
     /**
@@ -80,17 +77,9 @@ public class SimpleEventHandler implements IEventHandler {
 
                     // check if the event class extends the base event class
                     if (IEvent.class.isAssignableFrom(eventClass)) {
-
-                        // add class to methodListeners
-                        if (!methodListeners.containsKey(eventClass))
-                            methodListeners.put(eventClass, new ConcurrentHashMap<>());
-
-                        // add method to methodListeners
-                        if (!methodListeners.get(eventClass).containsKey(method))
-                            methodListeners.get(eventClass).put(method, new CopyOnWriteArrayList<>());
-
-                        // add event listener to method
-                        methodListeners.get(eventClass).get(method).add(eventListener);
+                        methodListeners.computeIfAbsent((Class<? extends IEvent>) eventClass, c -> new ConcurrentHashMap<>()) // add class to methodListeners
+                            .computeIfAbsent(method, m -> new CopyOnWriteArrayList<>()) // add method to methodListeners
+                            .add(eventListener); // add event listener to method
 
                         // log
                         log.info("Registered method listener {}#{}", eventListenerClass.getSimpleName(), method.getName());
@@ -107,31 +96,30 @@ public class SimpleEventHandler implements IEventHandler {
      */
     public void publish(IEvent event) {
         // consumer based handlers
-        if (consumerBasedHandlers.containsKey(event.getClass().getCanonicalName()) && consumerBasedHandlers.get(event.getClass().getCanonicalName()).size() > 0) {
-            List<Consumer> consumers = consumerBasedHandlers.get(event.getClass().getCanonicalName());
-            consumers.forEach(consumer -> consumer.accept(event));
-        }
+        final List<Consumer> eventConsumers = consumerBasedHandlers.get(event.getClass());
+        if (eventConsumers != null)
+            eventConsumers.forEach(consumer -> consumer.accept(event));
 
         // annotation handlers
         if (methodListeners.size() > 0) {
-            methodListeners.entrySet().stream()
-                    .filter(e -> e.getKey().isAssignableFrom(event.getClass()))
-                    .map(Map.Entry::getValue)
-                    .forEach(eventClass -> {
-                        eventClass.forEach((k, v) -> {
-                            v.forEach(object -> {
-                                try {
-                                    // Invoke Event
-                                    k.invoke(object, event);
-                                } catch (IllegalAccessException ex) {
-                                    log.error("Error dispatching event {}.", event.getClass().getSimpleName());
-                                } catch (Exception ex) {
-                                    ex.printStackTrace();
-                                    log.error("Unhandled exception caught dispatching event {}.", event.getClass().getSimpleName());
-                                }
-                            });
+            for (Map.Entry<Class<? extends IEvent>, ConcurrentMap<Method, List<Object>>> e : methodListeners.entrySet()) {
+                if (e.getKey().isAssignableFrom(event.getClass())) {
+                    ConcurrentMap<Method, List<Object>> eventClass = e.getValue();
+                    eventClass.forEach((k, v) -> {
+                        v.forEach(object -> {
+                            try {
+                                // Invoke Event
+                                k.invoke(object, event);
+                            } catch (IllegalAccessException ex) {
+                                log.error("Error dispatching event {}.", event.getClass().getSimpleName());
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                                log.error("Unhandled exception caught dispatching event {}.", event.getClass().getSimpleName());
+                            }
                         });
                     });
+                }
+            }
         }
     }
 

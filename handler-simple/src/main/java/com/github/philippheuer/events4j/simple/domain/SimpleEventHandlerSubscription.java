@@ -1,12 +1,13 @@
 package com.github.philippheuer.events4j.simple.domain;
 
 import com.github.philippheuer.events4j.api.domain.IDisposable;
+import com.github.philippheuer.events4j.api.domain.IEvent;
 import com.github.philippheuer.events4j.simple.SimpleEventHandler;
 import lombok.Getter;
 
 import java.util.function.Consumer;
 
-public class SimpleEventHandlerSubscription implements IDisposable {
+public class SimpleEventHandlerSubscription<T extends IEvent> implements IDisposable {
 
     /**
      * is Disposed?
@@ -19,11 +20,11 @@ public class SimpleEventHandlerSubscription implements IDisposable {
      */
     private SimpleEventHandler simpleEventHandler;
 
-    private Class eventClass;
+    private Class<T> eventClass;
 
-    private Consumer eventConsumer;
+    private Consumer<T> eventConsumer;
 
-    public SimpleEventHandlerSubscription(SimpleEventHandler simpleEventHandler, Class eventClass, Consumer consumer) {
+    public SimpleEventHandlerSubscription(SimpleEventHandler simpleEventHandler, Class<T> eventClass, Consumer<T> consumer) {
         this.simpleEventHandler = simpleEventHandler;
         this.eventClass = eventClass;
         this.eventConsumer = consumer;
@@ -36,7 +37,7 @@ public class SimpleEventHandlerSubscription implements IDisposable {
         if (!isDisposed) {
             // remove consumer
             if (eventConsumer != null) {
-                simpleEventHandler.getConsumerBasedHandlers().get(eventClass.getCanonicalName()).remove(eventConsumer);
+                simpleEventHandler.getConsumerBasedHandlers().get(eventClass).remove(eventConsumer);
             }
 
             // disposed
