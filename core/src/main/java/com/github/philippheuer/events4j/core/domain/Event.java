@@ -3,9 +3,12 @@ package com.github.philippheuer.events4j.core.domain;
 import com.github.philippheuer.events4j.api.domain.IEvent;
 import com.github.philippheuer.events4j.api.service.IServiceMediator;
 import lombok.Data;
-import lombok.Setter;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.UUID;
 
 /**
@@ -26,12 +29,11 @@ public abstract class Event implements IEvent {
     /**
      * Event fired at
      */
-    private Calendar firedAt;
+    private Instant firedAtInstant;
 
     /**
      * Holds a reference to the ServiceMediator to access 3rd party services
      */
-    @Setter
     private IServiceMediator serviceMediator;
 
     /**
@@ -39,6 +41,16 @@ public abstract class Event implements IEvent {
      */
     public Event() {
         eventId = UUID.randomUUID().toString();
-        firedAt = Calendar.getInstance();
+        firedAtInstant = Instant.now();
+    }
+
+    @Override
+    public Calendar getFiredAt() {
+        return GregorianCalendar.from(ZonedDateTime.ofInstant(this.firedAtInstant, ZoneId.systemDefault()));
+    }
+
+    @Override
+    public void setFiredAt(Calendar calendar) {
+        setFiredAtInstant(calendar.toInstant());
     }
 }
