@@ -16,7 +16,7 @@ public class TestEventHandler {
      */
     @EventSubscriber
     public void onTestEvent(TestEvent event) {
-        log.info("Received event [{}] that was fired at {}.", event.getEventId(), event.getInstant().toString());
+        log.info("Received event [{}] that was fired at {}.", event.getEventId(), event.getFiredAtInstant().toString());
         eventsProcessed++;
     }
 

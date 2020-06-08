@@ -29,7 +29,7 @@ public abstract class Event implements IEvent {
     /**
      * Event fired at
      */
-    private Instant instant;
+    private Instant firedAtInstant;
 
     /**
      * Holds a reference to the ServiceMediator to access 3rd party services
@@ -41,16 +41,16 @@ public abstract class Event implements IEvent {
      */
     public Event() {
         eventId = UUID.randomUUID().toString();
-        instant = Instant.now();
+        firedAtInstant = Instant.now();
     }
 
     @Override
     public Calendar getFiredAt() {
-        return GregorianCalendar.from(ZonedDateTime.ofInstant(this.instant, ZoneId.systemDefault()));
+        return GregorianCalendar.from(ZonedDateTime.ofInstant(this.firedAtInstant, ZoneId.systemDefault()));
     }
 
     @Override
     public void setFiredAt(Calendar calendar) {
-        setInstant(calendar.toInstant());
+        setFiredAtInstant(calendar.toInstant());
     }
 }

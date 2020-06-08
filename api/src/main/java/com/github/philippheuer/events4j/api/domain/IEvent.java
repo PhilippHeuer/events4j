@@ -10,17 +10,27 @@ import java.util.GregorianCalendar;
 
 public interface IEvent {
 
+    /**
+     * Delete multiple items from the list.
+     *
+     * @deprecated Replaced by {@link #setFiredAtInstant(Instant)} ()}
+     */
     @Deprecated
     void setFiredAt(Calendar calendar);
 
-    default void setInstant(Instant instant) {
+    default void setFiredAtInstant(Instant instant) {
         setFiredAt(GregorianCalendar.from(ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())));
     }
 
+    /**
+     * Delete multiple items from the list.
+     *
+     * @deprecated Replaced by {@link #getFiredAtInstant()} ()}
+     */
     @Deprecated
     Calendar getFiredAt();
 
-    default Instant getInstant() {
+    default Instant getFiredAtInstant() {
         return getFiredAt().toInstant();
     }
 

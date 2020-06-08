@@ -38,7 +38,7 @@ public class ReactorEventHandlerTest {
     public void testReactorEventHandlerWithTestEvent() throws Exception {
         // Register Listener
         Disposable disposable = eventManager.getEventHandler(ReactorEventHandler.class).onEvent(TestEvent.class, event -> {
-            log.info("Received event [{}] that was fired at {}.", event.getEventId(), event.getInstant().toString());
+            log.info("Received event [{}] that was fired at {}.", event.getEventId(), event.getFiredAtInstant().toString());
             eventsProcessed = eventsProcessed + 1;
         });
 
