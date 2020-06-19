@@ -30,13 +30,13 @@ public class ReactorEventHandler implements IEventHandler {
      * Used to bridge gateway events to the subscribers
      */
     @Getter
-    private final FluxProcessor<IEvent, IEvent> processor;
+    private final FluxProcessor<Object, Object> processor;
 
     /**
      * Event Sink
      */
     @Getter
-    private final FluxSink<IEvent> eventSink;
+    private final FluxSink<Object> eventSink;
 
     /**
      * Active Subscriptions
@@ -49,7 +49,7 @@ public class ReactorEventHandler implements IEventHandler {
      */
     public ReactorEventHandler() {
         this.scheduler = ForkJoinPoolScheduler.create("events4j-events", Runtime.getRuntime().availableProcessors() > 4 ? Runtime.getRuntime().availableProcessors() : 4);
-        this.processor = TopicProcessor.<IEvent>builder()
+        this.processor = TopicProcessor.<Object>builder()
                 .name("events4j-processor")
                 .waitStrategy(WaitStrategy.sleeping())
                 .bufferSize(8192)
@@ -64,7 +64,7 @@ public class ReactorEventHandler implements IEventHandler {
      * @param processor        Used to bridge gateway events to the subscribers
      * @param overflowStrategy Safely gates a multi-threaded producer.
      */
-    public ReactorEventHandler(Scheduler scheduler, FluxProcessor<IEvent, IEvent> processor, FluxSink.OverflowStrategy overflowStrategy) {
+    public ReactorEventHandler(Scheduler scheduler, FluxProcessor<Object, Object> processor, FluxSink.OverflowStrategy overflowStrategy) {
         this.scheduler = scheduler;
         this.processor = processor;
         this.eventSink = processor.sink(overflowStrategy);
@@ -75,7 +75,7 @@ public class ReactorEventHandler implements IEventHandler {
      *
      * @param event A event extending the base event class.
      */
-    public void publish(IEvent event) {
+    public void publish(Object event) {
         // publish event
         eventSink.next(event);
     }
@@ -88,7 +88,7 @@ public class ReactorEventHandler implements IEventHandler {
      * @param <E>        the event type
      * @return a new {@link reactor.core.publisher.Flux} of the given eventType
      */
-    public <E extends IEvent> Disposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
+    public <E extends Object> Disposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
         Flux<E> flux = processor
                 .publishOn(this.scheduler)
                 .ofType(eventClass)

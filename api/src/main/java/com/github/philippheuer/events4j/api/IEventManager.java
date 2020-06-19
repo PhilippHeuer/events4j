@@ -12,7 +12,7 @@ public interface IEventManager extends AutoCloseable {
      *
      * @param event Event
      */
-    void publish(IEvent event);
+    void publish(Object event);
 
     /**
      * Register EventHandler

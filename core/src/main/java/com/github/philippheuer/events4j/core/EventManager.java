@@ -101,25 +101,36 @@ public class EventManager implements IEventManager {
     /**
      * Dispatches a event
      *
-     * @param event A event extending the base event class.
+     * @param event A event of any kinds, should implement IEvent if possible
      */
-    public void publish(IEvent event) {
+    public void publish(Object event) {
+        // check for stop
+        if (isStopped) {
+            log.warn("Tried to dispatch a event to a closed eventManager!");
+            return;
+        }
+
         // metrics
         metricsRegistry.counter("events4j.published", "name", event.getClass().getSimpleName()).increment();
 
-        // inject serviceMediator
-        if (event.getServiceMediator() == null) {
-            event.setServiceMediator(getServiceMediator());
-        }
+        // implements IEvent?
+        if (event instanceof IEvent) {
+            // inject serviceMediator
+            IEvent iEvent = (IEvent) event;
 
-        // log event dispatch
-        if (log.isDebugEnabled()) {
-            log.debug("Dispatching event of type {} with id {}.", event.getClass().getSimpleName(), event.getEventId());
-        }
+            if (iEvent.getServiceMediator() == null) {
+                iEvent.setServiceMediator(getServiceMediator());
+            }
 
-        // check for stop
-        if (isStopped) {
-            log.warn("Event scheduler stopped, dropped event [{}]!", event.getEventId());
+            // log event dispatch
+            if (log.isDebugEnabled()) {
+                log.debug("Dispatching event of type {} with id {}.", event.getClass().getSimpleName(), iEvent.getEventId());
+            }
+        } else {
+            // log event dispatch
+            if (log.isDebugEnabled()) {
+                log.debug("Dispatching event of type {}.", event.getClass().getSimpleName());
+            }
         }
 
         // dispatch event to each handler

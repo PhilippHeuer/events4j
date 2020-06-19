@@ -4,6 +4,7 @@ import com.github.philippheuer.events4j.api.IEventManager;
 import com.github.philippheuer.events4j.api.domain.IDisposable;
 import com.github.philippheuer.events4j.core.EventManager;
 import com.github.philippheuer.events4j.simple.domain.TestEvent;
+import com.github.philippheuer.events4j.simple.domain.TestEventObject;
 import com.github.philippheuer.events4j.simple.listener.TestEventHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
@@ -23,6 +24,28 @@ public class SimpleEventHandlerTest {
         eventManager = new EventManager();
         SimpleEventHandler simpleEventHandler = new SimpleEventHandler();
         eventManager.registerEventHandler(simpleEventHandler);
+    }
+
+    /**
+     * Tests if events can be dispatched
+     */
+    @Test
+    public void testObjectEvent() throws Exception {
+        eventsHandled = 0;
+
+        // Consumer based handler
+        IDisposable disposable = eventManager.getEventHandler(SimpleEventHandler.class).onEvent(TestEventObject.class, testEvent -> {
+            eventsHandled = eventsHandled + 1;
+        });
+
+        // Dispatch
+        eventManager.publish(new TestEventObject());
+
+        // Dispose Handler
+        disposable.dispose();
+
+        // Verify
+        Assertions.assertEquals(1, eventsHandled, "one event should have been handled");
     }
 
     /**

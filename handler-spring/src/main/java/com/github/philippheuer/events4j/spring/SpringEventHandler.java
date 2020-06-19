@@ -1,6 +1,5 @@
 package com.github.philippheuer.events4j.spring;
 
-import com.github.philippheuer.events4j.api.domain.IEvent;
 import com.github.philippheuer.events4j.api.service.IEventHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ public class SpringEventHandler implements IEventHandler {
      *
      * @param event A event extending the base event class.
      */
-    public void publish(IEvent event) {
+    public void publish(Object event) {
         // publish event
         applicationEventPublisher.publishEvent(event);
     }

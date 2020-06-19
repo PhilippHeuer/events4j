@@ -3,6 +3,7 @@ package com.github.philippheuer.events4j.reactor;
 import com.github.philippheuer.events4j.api.IEventManager;
 import com.github.philippheuer.events4j.core.EventManager;
 import com.github.philippheuer.events4j.reactor.domain.TestEvent;
+import com.github.philippheuer.events4j.reactor.domain.TestEventObject;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -29,6 +30,28 @@ public class ReactorEventHandlerTest {
         eventManager = new EventManager();
         ReactorEventHandler reactorEventHandler = new ReactorEventHandler();
         eventManager.registerEventHandler(reactorEventHandler);
+    }
+
+    /**
+     * Tests if events can be dispatched
+     */
+    @Test
+    public void testReactorEventHandlerWithTestEventObject() throws Exception {
+        // Register Listener
+        Disposable disposable = eventManager.getEventHandler(ReactorEventHandler.class).onEvent(TestEventObject.class, event -> {
+            log.info("Received a event.");
+            eventsProcessed = eventsProcessed + 1;
+        });
+
+        // dispatch
+        eventManager.publish(new TestEventObject());
+        Thread.sleep(1000);
+
+        // dispose handler and dispatch 1 more event
+        disposable.dispose();
+
+        // Verify
+        Assertions.assertEquals(1, eventsProcessed, "one event should have been handled");
     }
 
     /**

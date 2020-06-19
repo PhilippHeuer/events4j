@@ -1,7 +1,6 @@
 package com.github.philippheuer.events4j.simple;
 
 import com.github.philippheuer.events4j.api.domain.IDisposable;
-import com.github.philippheuer.events4j.api.domain.IEvent;
 import com.github.philippheuer.events4j.api.service.IEventHandler;
 import com.github.philippheuer.events4j.simple.domain.EventSubscriber;
 import com.github.philippheuer.events4j.simple.domain.SimpleEventHandlerSubscription;
@@ -23,12 +22,12 @@ public class SimpleEventHandler implements IEventHandler {
      * Consumer based handlers
      */
     @Getter
-    private final ConcurrentMap<Class<? extends IEvent>, List<Consumer>> consumerBasedHandlers = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Class<? extends Object>, List<Consumer>> consumerBasedHandlers = new ConcurrentHashMap<>();
 
     /**
      * Annotation based method listeners
      */
-    private final ConcurrentMap<Class<? extends IEvent>, ConcurrentMap<Method, List<Object>>> methodListeners = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Class<? extends Object>, ConcurrentMap<Method, List<Object>>> methodListeners = new ConcurrentHashMap<>();
 
     /**
      * Registers a listener using {@link EventSubscriber} method annotations.
@@ -47,7 +46,7 @@ public class SimpleEventHandler implements IEventHandler {
      * @param <E>        the event type
      * @return a new Disposable of the given eventType
      */
-    public <E extends IEvent> IDisposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
+    public <E extends Object> IDisposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
         // register
         final List<Consumer> eventHandlers = consumerBasedHandlers.computeIfAbsent(eventClass, s -> new CopyOnWriteArrayList<>());
         eventHandlers.add(consumer);
@@ -76,8 +75,8 @@ public class SimpleEventHandler implements IEventHandler {
                     Class<?> eventClass = method.getParameterTypes()[0];
 
                     // check if the event class extends the base event class
-                    if (IEvent.class.isAssignableFrom(eventClass)) {
-                        methodListeners.computeIfAbsent((Class<? extends IEvent>) eventClass, c -> new ConcurrentHashMap<>()) // add class to methodListeners
+                    if (Object.class.isAssignableFrom(eventClass)) {
+                        methodListeners.computeIfAbsent(eventClass, c -> new ConcurrentHashMap<>()) // add class to methodListeners
                             .computeIfAbsent(method, m -> new CopyOnWriteArrayList<>()) // add method to methodListeners
                             .add(eventListener); // add event listener to method
 
@@ -94,7 +93,7 @@ public class SimpleEventHandler implements IEventHandler {
      *
      * @param event The event that will be dispatched to the simple based method listeners.
      */
-    public void publish(IEvent event) {
+    public void publish(Object event) {
         // consumer based handlers
         final List<Consumer> eventConsumers = consumerBasedHandlers.get(event.getClass());
         if (eventConsumers != null)
@@ -102,7 +101,7 @@ public class SimpleEventHandler implements IEventHandler {
 
         // annotation handlers
         if (methodListeners.size() > 0) {
-            for (Map.Entry<Class<? extends IEvent>, ConcurrentMap<Method, List<Object>>> e : methodListeners.entrySet()) {
+            for (Map.Entry<Class<? extends Object>, ConcurrentMap<Method, List<Object>>> e : methodListeners.entrySet()) {
                 if (e.getKey().isAssignableFrom(event.getClass())) {
                     ConcurrentMap<Method, List<Object>> eventClass = e.getValue();
                     eventClass.forEach((k, v) -> {

@@ -1,7 +1,5 @@
 package com.github.philippheuer.events4j.api.service;
 
-import com.github.philippheuer.events4j.api.domain.IEvent;
-
 public interface IEventHandler extends AutoCloseable {
 
     /**
@@ -9,6 +7,6 @@ public interface IEventHandler extends AutoCloseable {
      *
      * @param event Event
      */
-    void publish(IEvent event);
+    void publish(Object event);
 
 }
