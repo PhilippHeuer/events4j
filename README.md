@@ -23,7 +23,7 @@ and the dependency: (latest, you should use the actual version here)
 <dependency>
     <groupId>com.github.philippheuer.events4j</groupId>
     <artifactId>events4j</artifactId>
-    <version>0.5.0</version>
+    <version>0.9.0</version>
     <type>pom</type>
 </dependency>
 ```
@@ -39,7 +39,7 @@ repositories {
 
 and the dependency:
 ```groovy
-compile 'com.github.philippheuer.events4j:events4j:0.5.0'
+compile 'com.github.philippheuer.events4j:events4j:0.9.0'
 ```
 
 # Usage
