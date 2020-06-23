@@ -6,16 +6,6 @@ description = project.artifactDescription
 version = project.artifactVersion
 
 /**
- * Testing
- */
-test {
-	useJUnitPlatform {
-		includeTags 'unittest'
-		excludeTags 'integration'
-	}
-}
-
-/**
  * Javadoc
  */
 javadoc {
@@ -73,6 +63,7 @@ def pomConfig = {
 		url project.vcsUrl
 	}
 }
+
 publishing {
 	publications {
 		mainProject(MavenPublication) {

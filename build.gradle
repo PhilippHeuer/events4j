@@ -2,10 +2,9 @@ plugins {
     id 'java'
     id 'idea'
     id 'eclipse'
-    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
     id 'maven-publish'
-    id 'com.jfrog.bintray' version '1.8.4' apply false
-    id 'com.jfrog.artifactory' version '4.8.1' apply false
+    id 'com.jfrog.bintray' version '1.8.5' apply false
+    id 'com.jfrog.artifactory' version '4.15.2' apply false
 }
 
 group 'com.github.philippheuer.events4j'
@@ -35,11 +34,10 @@ allprojects {
 
 // Subprojects
 subprojects {
-    apply plugin: 'java'
+    apply plugin: 'java-library'
     apply plugin: 'eclipse'
     apply plugin: 'idea'
     apply plugin: 'maven-publish'
-    apply plugin: 'io.spring.dependency-management'
     apply plugin: 'com.jfrog.bintray'
     apply plugin: 'com.jfrog.artifactory'
 
@@ -47,40 +45,39 @@ subprojects {
     sourceCompatibility = 1.8
 
     // Dependency Management for Subprojects
-    dependencyManagement {
-        imports {
-            mavenBom "io.projectreactor:reactor-bom:Californium-RELEASE"
-        }
-        dependencies {
-            // Logging
-            dependency group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
-            dependency group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
-
-            // Testing
-            dependency group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.3.1'
-            dependency group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.3.1'
-
-            // Lombok
-            dependency group: 'org.projectlombok', name: 'lombok', version: '1.18.2'
-        }
+    dependencies {
+        implementation platform("io.projectreactor:reactor-bom:Californium-RELEASE")
     }
 
     // Common Dependencies
     plugins.withType(JavaPlugin) {
         dependencies {
             // Logging
-            compile group: 'org.slf4j', name: 'slf4j-api'
-            testCompile group: 'ch.qos.logback', name: 'logback-classic'
+            compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+            testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
 
-            // Test
-            testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api'
-            testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
+            // JUnit5
+            testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.6.2'
+            testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.6.2'
 
             // Getter & Setter
-            compileOnly group: 'org.projectlombok', name: 'lombok'
-            testCompile group: 'org.projectlombok', name: 'lombok'
-            annotationProcessor group: 'org.projectlombok', name: 'lombok'
-            testAnnotationProcessor group: 'org.projectlombok', name: 'lombok'
+            compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
+            testCompile group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
+            annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
+            testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
+        }
+
+        test {
+            // Enable JUnit 5 (Gradle 4.6+).
+            useJUnitPlatform()
+
+            // Always run tests, even when nothing changed.
+            dependsOn 'cleanTest'
+
+            // Show test results.
+            testLogging {
+                events "passed", "skipped", "failed"
+            }
         }
     }
 }
