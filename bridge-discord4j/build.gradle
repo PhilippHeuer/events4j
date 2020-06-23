@@ -1,0 +1,18 @@
+// In this section you declare the dependencies for your production and test code
+dependencies {
+	// Modules
+	compile project(':' + rootProject.name + '-api')
+	testCompile project(':' + rootProject.name + '-core')
+
+	// Bridge
+	compile group: 'com.discord4j', name: 'discord4j-core', version: '3.1.0.RC2'
+}
+
+// Artifact Info
+project.ext {
+	artifactName = 'Events4J-Bridge-Discord4J'
+	artifactDescription = 'Events4J - Bridge - Discord4J'
+}
+
+// Deployment Script
+apply from: '../deployment.gradle'

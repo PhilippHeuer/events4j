@@ -1,4 +1,4 @@
-include 'api', 'core', 'handler-reactor', 'handler-simple', 'handler-spring'
+include 'api', 'core', 'handler-reactor', 'handler-simple', 'handler-spring', 'bridge-discord4j', 'bridge-jda'
 
 rootProject.name = 'events4j'
 rootProject.children.each {
