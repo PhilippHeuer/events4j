@@ -13,6 +13,7 @@ public interface IEvent {
     /**
      * Delete multiple items from the list.
      *
+     * @param calendar Calendar
      * @deprecated Replaced by {@link #setFiredAtInstant(Instant)} ()}
      */
     @Deprecated
@@ -26,6 +27,7 @@ public interface IEvent {
      * Delete multiple items from the list.
      *
      * @deprecated Replaced by {@link #getFiredAtInstant()} ()}
+     * @return Calendar
      */
     @Deprecated
     Calendar getFiredAt();
