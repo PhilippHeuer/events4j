@@ -1,19 +1,25 @@
 package com.github.philippheuer.events4j.core;
 
 import com.github.philippheuer.events4j.api.IEventManager;
+import com.github.philippheuer.events4j.api.domain.IDisposable;
 import com.github.philippheuer.events4j.api.domain.IEvent;
 import com.github.philippheuer.events4j.api.service.IEventHandler;
 import com.github.philippheuer.events4j.api.service.IServiceMediator;
 import com.github.philippheuer.events4j.core.services.ServiceMediator;
 import com.github.philippheuer.events4j.reactor.ReactorEventHandler;
+import com.github.philippheuer.events4j.reactor.util.ReactorDisposableWrapper;
 import com.github.philippheuer.events4j.simple.SimpleEventHandler;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.Disposable;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * The EventManager
@@ -39,7 +45,7 @@ public class EventManager implements IEventManager {
     /**
      * Event Handlers
      */
-    private ArrayList<IEventHandler> eventHandlers = new ArrayList<>();
+    private List<IEventHandler> eventHandlers = new ArrayList<>();
 
     /**
      * Annotation based event manager state
@@ -50,6 +56,12 @@ public class EventManager implements IEventManager {
      * is Stopped?
      */
     private boolean isStopped = false;
+
+    /**
+     * Default EventHandler
+     */
+    @Setter
+    private Class defaultEventHandler;
 
     /**
      * Constructor
@@ -81,6 +93,11 @@ public class EventManager implements IEventManager {
             log.info("Auto Discovery: SimpleEventHandler registered!");
             SimpleEventHandler simpleEventHandler = new SimpleEventHandler();
             registerEventHandler(simpleEventHandler);
+
+            // set as default if no default was set yet
+            if (defaultEventHandler == null) {
+                defaultEventHandler = SimpleEventHandler.class;
+            }
         } catch (ClassNotFoundException ex) {
             log.debug("Auto Discovery: SimpleEventHandler not available!");
         }
@@ -93,6 +110,11 @@ public class EventManager implements IEventManager {
             log.info("Auto Discovery: ReactorEventHandler registered!");
             ReactorEventHandler reactorEventHandler = new ReactorEventHandler();
             registerEventHandler(reactorEventHandler);
+
+            // set as default if no default was set yet
+            if (defaultEventHandler == null) {
+                defaultEventHandler = ReactorEventHandler.class;
+            }
         } catch (ClassNotFoundException ex) {
             log.debug("Auto Discovery: ReactorEventHandler not available!");
         }
@@ -162,6 +184,25 @@ public class EventManager implements IEventManager {
         }
 
         throw new RuntimeException("No eventHandler of type " + eventHandlerClass.getName() + " is registered!");
+    }
+
+    /**
+     * Registers a new consumer based default event handler if supported
+     *
+     * @param eventClass the event class to obtain events from
+     * @param consumer   the event consumer / handler method
+     * @param <E>        the event type
+     * @return a new Disposable of the given eventType
+     */
+    public <E extends Object> IDisposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
+        if (defaultEventHandler == SimpleEventHandler.class) {
+            return getEventHandler(SimpleEventHandler .class).onEvent(eventClass, consumer);
+        } else if (defaultEventHandler == ReactorEventHandler.class) {
+            Disposable disposable = getEventHandler(ReactorEventHandler .class).onEvent(eventClass, consumer);
+            return new ReactorDisposableWrapper(disposable);
+        }
+
+        throw new RuntimeException("EventHandler "+defaultEventHandler.getCanonicalName()+" has to be registered with EventManager.registerEventHandler or support EventManager.autoDiscovery!");
     }
 
     /**

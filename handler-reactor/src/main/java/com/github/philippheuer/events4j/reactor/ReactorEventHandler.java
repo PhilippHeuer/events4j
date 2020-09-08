@@ -1,6 +1,5 @@
 package com.github.philippheuer.events4j.reactor;
 
-import com.github.philippheuer.events4j.api.domain.IEvent;
 import com.github.philippheuer.events4j.api.service.IEventHandler;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

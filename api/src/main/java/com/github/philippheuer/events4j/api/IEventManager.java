@@ -1,7 +1,6 @@
 package com.github.philippheuer.events4j.api;
 
 
-import com.github.philippheuer.events4j.api.domain.IEvent;
 import com.github.philippheuer.events4j.api.service.IEventHandler;
 import com.github.philippheuer.events4j.api.service.IServiceMediator;
 
