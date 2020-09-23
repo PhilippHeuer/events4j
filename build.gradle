@@ -46,7 +46,7 @@ subprojects {
 
     // Dependency Management for Subprojects
     dependencies {
-        implementation platform("io.projectreactor:reactor-bom:Californium-RELEASE")
+        implementation platform("io.projectreactor:reactor-bom:Dysprosium-SR12")
     }
 
     // Common Dependencies

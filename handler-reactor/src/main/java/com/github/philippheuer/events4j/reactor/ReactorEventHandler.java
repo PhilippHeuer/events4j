@@ -1,16 +1,17 @@
 package com.github.philippheuer.events4j.reactor;
 
 import com.github.philippheuer.events4j.api.service.IEventHandler;
+import com.github.philippheuer.events4j.reactor.util.Events4JSubscriber;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.reactivestreams.Subscriber;
 import reactor.core.Disposable;
+import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxProcessor;
 import reactor.core.publisher.FluxSink;
-import reactor.core.publisher.TopicProcessor;
 import reactor.core.scheduler.Scheduler;
 import reactor.scheduler.forkjoin.ForkJoinPoolScheduler;
-import reactor.util.concurrent.WaitStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,11 +49,7 @@ public class ReactorEventHandler implements IEventHandler {
      */
     public ReactorEventHandler() {
         this.scheduler = ForkJoinPoolScheduler.create("events4j-events", Runtime.getRuntime().availableProcessors() > 4 ? Runtime.getRuntime().availableProcessors() : 4);
-        this.processor = TopicProcessor.<Object>builder()
-                .name("events4j-processor")
-                .waitStrategy(WaitStrategy.sleeping())
-                .bufferSize(8192)
-                .build();
+        this.processor = EmitterProcessor.create(8192, true);
         this.eventSink = processor.sink(FluxSink.OverflowStrategy.BUFFER);
     }
 
@@ -92,9 +89,11 @@ public class ReactorEventHandler implements IEventHandler {
                 .publishOn(this.scheduler)
                 .ofType(eventClass)
                 .limitRequest(15);
-        Disposable disposable = flux.subscribe(consumer);
 
-        return disposable;
+        Subscriber<E> subscription = new Events4JSubscriber(consumer);
+        flux.subscribe(subscription);
+
+        return (Disposable) subscription;
     }
 
     /**
@@ -119,5 +118,4 @@ public class ReactorEventHandler implements IEventHandler {
             scheduler.dispose();
         }
     }
-
 }
