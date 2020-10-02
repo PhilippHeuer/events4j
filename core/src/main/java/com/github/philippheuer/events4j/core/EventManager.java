@@ -61,7 +61,7 @@ public class EventManager implements IEventManager {
      * Default EventHandler
      */
     @Setter
-    private Class defaultEventHandler;
+    private String defaultEventHandler;
 
     /**
      * Constructor
@@ -93,11 +93,6 @@ public class EventManager implements IEventManager {
             log.info("Auto Discovery: SimpleEventHandler registered!");
             SimpleEventHandler simpleEventHandler = new SimpleEventHandler();
             registerEventHandler(simpleEventHandler);
-
-            // set as default if no default was set yet
-            if (defaultEventHandler == null) {
-                defaultEventHandler = SimpleEventHandler.class;
-            }
         } catch (ClassNotFoundException ex) {
             log.debug("Auto Discovery: SimpleEventHandler not available!");
         }
@@ -110,11 +105,6 @@ public class EventManager implements IEventManager {
             log.info("Auto Discovery: ReactorEventHandler registered!");
             ReactorEventHandler reactorEventHandler = new ReactorEventHandler();
             registerEventHandler(reactorEventHandler);
-
-            // set as default if no default was set yet
-            if (defaultEventHandler == null) {
-                defaultEventHandler = ReactorEventHandler.class;
-            }
         } catch (ClassNotFoundException ex) {
             log.debug("Auto Discovery: ReactorEventHandler not available!");
         }
@@ -195,14 +185,41 @@ public class EventManager implements IEventManager {
      * @return a new Disposable of the given eventType
      */
     public <E extends Object> IDisposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
-        if (defaultEventHandler == SimpleEventHandler.class) {
-            return getEventHandler(SimpleEventHandler .class).onEvent(eventClass, consumer);
-        } else if (defaultEventHandler == ReactorEventHandler.class) {
-            Disposable disposable = getEventHandler(ReactorEventHandler .class).onEvent(eventClass, consumer);
+        String eventHandler = defaultEventHandler;
+        if (eventHandler == null) {
+            if (eventHandlers.size() == 1) {
+                eventHandler = eventHandlers.get(0).getClass().getCanonicalName();
+            } else {
+                throw new RuntimeException("When more than one eventHandler has been registered you have to specify the defaultEventHandler using EventManager#setDefaultEventHandler!");
+            }
+        }
+
+        if ("com.github.philippheuer.events4j.simple.SimpleEventHandler".equalsIgnoreCase(eventHandler)) {
+            return getEventHandler(SimpleEventHandler.class).onEvent(eventClass, consumer);
+        } else if ("com.github.philippheuer.events4j.reactor.ReactorEventHandler".equalsIgnoreCase(eventHandler)) {
+            Disposable disposable = getEventHandler(ReactorEventHandler.class).onEvent(eventClass, consumer);
             return new ReactorDisposableWrapper(disposable);
         }
 
-        throw new RuntimeException("EventHandler "+defaultEventHandler.getCanonicalName()+" has to be registered with EventManager.registerEventHandler or support EventManager.autoDiscovery!");
+        throw new RuntimeException("EventHandler " + eventHandler + " does not support EventManager.onEvent!");
+    }
+
+    /**
+     * Sets the default eventHandler
+     *
+     * @param eventHandler eventHandler
+     */
+    public void setDefaultEventHandler(Class eventHandler) {
+        this.defaultEventHandler = eventHandler.getCanonicalName();
+    }
+
+    /**
+     * Sets the default eventHandler
+     *
+     * @param eventHandler canonical name of the eventHandler class
+     */
+    public void setDefaultEventHandler(String eventHandler) {
+        this.defaultEventHandler = eventHandler;
     }
 
     /**

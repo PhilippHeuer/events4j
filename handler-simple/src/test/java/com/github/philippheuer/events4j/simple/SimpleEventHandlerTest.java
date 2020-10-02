@@ -1,6 +1,5 @@
 package com.github.philippheuer.events4j.simple;
 
-import com.github.philippheuer.events4j.api.IEventManager;
 import com.github.philippheuer.events4j.api.domain.IDisposable;
 import com.github.philippheuer.events4j.core.EventManager;
 import com.github.philippheuer.events4j.simple.domain.TestEvent;
@@ -15,7 +14,7 @@ import org.junit.jupiter.api.Test;
 @Slf4j
 public class SimpleEventHandlerTest {
 
-    private static IEventManager eventManager;
+    private static EventManager eventManager;
 
     private static int eventsHandled = 0;
 
@@ -23,6 +22,7 @@ public class SimpleEventHandlerTest {
     public static void beforeAll() {
         eventManager = new EventManager();
         SimpleEventHandler simpleEventHandler = new SimpleEventHandler();
+        eventManager.setDefaultEventHandler(SimpleEventHandler.class);
         eventManager.registerEventHandler(simpleEventHandler);
     }
 
@@ -34,7 +34,7 @@ public class SimpleEventHandlerTest {
         eventsHandled = 0;
 
         // Consumer based handler
-        IDisposable disposable = eventManager.getEventHandler(SimpleEventHandler.class).onEvent(TestEventObject.class, testEvent -> {
+        IDisposable disposable = eventManager.onEvent(TestEventObject.class, testEvent -> {
             eventsHandled = eventsHandled + 1;
         });
 
@@ -56,7 +56,7 @@ public class SimpleEventHandlerTest {
         eventsHandled = 0;
 
         // Consumer based handler
-        IDisposable disposable = eventManager.getEventHandler(SimpleEventHandler.class).onEvent(TestEvent.class, testEvent -> {
+        IDisposable disposable = eventManager.onEvent(TestEvent.class, testEvent -> {
             eventsHandled = eventsHandled + 1;
         });
 
