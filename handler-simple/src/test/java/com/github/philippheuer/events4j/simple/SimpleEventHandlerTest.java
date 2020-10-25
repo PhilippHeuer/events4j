@@ -37,6 +37,7 @@ public class SimpleEventHandlerTest {
         IDisposable disposable = eventManager.onEvent(TestEventObject.class, testEvent -> {
             eventsHandled = eventsHandled + 1;
         });
+        Assertions.assertEquals(1, eventManager.getActiveSubscriptions().size());
 
         // Dispatch
         eventManager.publish(new TestEventObject());
@@ -45,6 +46,7 @@ public class SimpleEventHandlerTest {
         disposable.dispose();
 
         // Verify
+        Assertions.assertEquals(0, eventManager.getActiveSubscriptions().size());
         Assertions.assertEquals(1, eventsHandled, "one event should have been handled");
     }
 

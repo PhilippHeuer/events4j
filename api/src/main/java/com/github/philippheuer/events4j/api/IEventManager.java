@@ -2,9 +2,11 @@ package com.github.philippheuer.events4j.api;
 
 
 import com.github.philippheuer.events4j.api.domain.IDisposable;
+import com.github.philippheuer.events4j.api.domain.IEventSubscription;
 import com.github.philippheuer.events4j.api.service.IEventHandler;
 import com.github.philippheuer.events4j.api.service.IServiceMediator;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 public interface IEventManager extends AutoCloseable {
@@ -46,6 +48,7 @@ public interface IEventManager extends AutoCloseable {
      * @param eventHandlerClass the event handler class
      * @return boolean
      */
+    @SuppressWarnings("rawtypes")
     boolean hasEventHandler(Class eventHandlerClass);
 
     /**
@@ -57,4 +60,10 @@ public interface IEventManager extends AutoCloseable {
      */
     <E> E getEventHandler(Class<E> eventHandlerClass);
 
+    /**
+     * Gets a list of all active subscriptions
+     *
+     * @return a list that holds IEventSubscription`s
+     */
+    List<IEventSubscription> getActiveSubscriptions();
 }

@@ -1,36 +1,32 @@
-package com.github.philippheuer.events4j.reactor.util;
+package com.github.philippheuer.events4j.simple.domain;
 
+import com.github.philippheuer.events4j.api.domain.IDisposable;
 import com.github.philippheuer.events4j.api.domain.IEventSubscription;
 import lombok.Getter;
 import lombok.ToString;
-import reactor.core.Disposable;
 
 import java.util.List;
 import java.util.function.Consumer;
 
+@Getter
 @ToString
-public class ReactorDisposableWrapper implements Disposable, IEventSubscription {
+public class SimpleDisposableWrapper implements IEventSubscription {
 
-    @Getter
+    private final IDisposable disposable;
+
     private final String id;
 
-    @Getter
     @SuppressWarnings("rawtypes")
     private final Class eventType;
 
-    @Getter
     @SuppressWarnings("rawtypes")
     private final Consumer consumer;
 
-    @Getter
-    private final Disposable disposable;
-
-    @Getter
     @ToString.Exclude
     private final List<IEventSubscription> activeSubscriptions;
 
     @SuppressWarnings("rawtypes")
-    public ReactorDisposableWrapper(Disposable disposable, String id, Class eventType, Consumer consumer, List<IEventSubscription> activeSubscriptions) {
+    public SimpleDisposableWrapper(IDisposable disposable, String id, Class eventType, Consumer consumer, List<IEventSubscription> activeSubscriptions) {
         this.disposable = disposable;
         this.id = id;
         this.eventType = eventType;
@@ -40,10 +36,18 @@ public class ReactorDisposableWrapper implements Disposable, IEventSubscription 
         activeSubscriptions.add(this);
     }
 
+    /**
+     * Dispose
+     */
     @Override
     public void dispose() {
-        activeSubscriptions.remove(this);
-        disposable.dispose();
+        if (!disposable.isDisposed()) {
+            // remove consumer
+            disposable.dispose();
+
+            // remove from active subscriptions
+            activeSubscriptions.remove(this);
+        }
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.github.philippheuer.events4j.core;
 
+import com.github.philippheuer.events4j.api.domain.IDisposable;
+import com.github.philippheuer.events4j.core.domain.TestEventObject;
 import com.github.philippheuer.events4j.simple.SimpleEventHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
@@ -16,6 +18,7 @@ public class EventManagerTest {
     public static void initializeEventManager() {
         eventManager = new EventManager();
         eventManager.autoDiscovery();
+        eventManager.setDefaultEventHandler(SimpleEventHandler.class);
     }
 
     @Test
@@ -32,6 +35,18 @@ public class EventManagerTest {
     @Test
     public void testHasEventHandlerByClass() {
         Assertions.assertTrue(eventManager.hasEventHandler(SimpleEventHandler.class), "should fine a eventHandler for class SimpleEventHandler");
+    }
+
+    @Test
+    public void testUniqueOnEvent() {
+        // Register Listener
+        IDisposable disposableA = eventManager.onEventIfIdUnique("test", TestEventObject.class, System.out::println);
+        IDisposable disposableB = eventManager.onEventIfIdUnique("test", TestEventObject.class, System.out::println);
+
+        // Verify
+        Assertions.assertEquals(1, eventManager.getActiveSubscriptions().size());
+        Assertions.assertNotNull(disposableA);
+        Assertions.assertNull(disposableB);
     }
 
     @AfterAll

@@ -2,31 +2,31 @@ package com.github.philippheuer.events4j.simple.domain;
 
 import com.github.philippheuer.events4j.api.domain.IDisposable;
 import com.github.philippheuer.events4j.simple.SimpleEventHandler;
+import lombok.AccessLevel;
 import lombok.Getter;
 
 import java.util.function.Consumer;
 
-public class SimpleEventHandlerSubscription<T extends Object> implements IDisposable {
+@Getter
+public class SimpleEventHandlerSubscription implements IDisposable {
 
-    /**
-     * is Disposed?
-     */
     @Getter
     private boolean isDisposed = false;
 
-    /**
-     * Event Handler
-     */
-    private SimpleEventHandler simpleEventHandler;
+    @Getter(AccessLevel.NONE)
+    private final SimpleEventHandler simpleEventHandler;
 
-    private Class<T> eventClass;
+    @SuppressWarnings("rawtypes")
+    private final Class eventType;
 
-    private Consumer<T> eventConsumer;
+    @SuppressWarnings("rawtypes")
+    private final Consumer consumer;
 
-    public SimpleEventHandlerSubscription(SimpleEventHandler simpleEventHandler, Class<T> eventClass, Consumer<T> consumer) {
+    @SuppressWarnings("rawtypes")
+    public SimpleEventHandlerSubscription(SimpleEventHandler simpleEventHandler, Class eventType, Consumer consumer) {
         this.simpleEventHandler = simpleEventHandler;
-        this.eventClass = eventClass;
-        this.eventConsumer = consumer;
+        this.eventType = eventType;
+        this.consumer = consumer;
     }
 
     /**
@@ -35,8 +35,8 @@ public class SimpleEventHandlerSubscription<T extends Object> implements IDispos
     public void dispose() {
         if (!isDisposed) {
             // remove consumer
-            if (eventConsumer != null) {
-                simpleEventHandler.getConsumerBasedHandlers().get(eventClass).remove(eventConsumer);
+            if (consumer != null) {
+                simpleEventHandler.getConsumerBasedHandlers().get(eventType).remove(consumer);
             }
 
             // disposed

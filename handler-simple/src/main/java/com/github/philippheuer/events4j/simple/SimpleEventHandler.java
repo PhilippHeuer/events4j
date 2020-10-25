@@ -22,12 +22,13 @@ public class SimpleEventHandler implements IEventHandler {
      * Consumer based handlers
      */
     @Getter
-    private final ConcurrentMap<Class<? extends Object>, List<Consumer>> consumerBasedHandlers = new ConcurrentHashMap<>();
+    @SuppressWarnings("rawtypes")
+    private final ConcurrentMap<Class<?>, List<Consumer>> consumerBasedHandlers = new ConcurrentHashMap<>();
 
     /**
      * Annotation based method listeners
      */
-    private final ConcurrentMap<Class<? extends Object>, ConcurrentMap<Method, List<Object>>> methodListeners = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Class<?>, ConcurrentMap<Method, List<Object>>> methodListeners = new ConcurrentHashMap<>();
 
     /**
      * Registers a listener using {@link EventSubscriber} method annotations.
@@ -46,13 +47,14 @@ public class SimpleEventHandler implements IEventHandler {
      * @param <E>        the event type
      * @return a new Disposable of the given eventType
      */
-    public <E extends Object> IDisposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
+    public <E> IDisposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
         // register
+        @SuppressWarnings("rawtypes")
         final List<Consumer> eventHandlers = consumerBasedHandlers.computeIfAbsent(eventClass, s -> new CopyOnWriteArrayList<>());
         eventHandlers.add(consumer);
 
         // return disposable
-        return new SimpleEventHandlerSubscription<>(this, eventClass, consumer);
+        return new SimpleEventHandlerSubscription(this, eventClass, consumer);
     }
 
     /**

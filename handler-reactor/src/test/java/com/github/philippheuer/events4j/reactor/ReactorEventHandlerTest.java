@@ -1,6 +1,6 @@
 package com.github.philippheuer.events4j.reactor;
 
-import com.github.philippheuer.events4j.api.IEventManager;
+import com.github.philippheuer.events4j.api.domain.IDisposable;
 import com.github.philippheuer.events4j.core.EventManager;
 import com.github.philippheuer.events4j.reactor.domain.TestEvent;
 import com.github.philippheuer.events4j.reactor.domain.TestEventObject;
@@ -21,7 +21,7 @@ public class ReactorEventHandlerTest {
 
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ReactorEventHandlerTest.class);
 
-    private static IEventManager eventManager;
+    private static EventManager eventManager;
 
     private static int eventsProcessed = 0;
 
@@ -30,6 +30,7 @@ public class ReactorEventHandlerTest {
         eventManager = new EventManager();
         ReactorEventHandler reactorEventHandler = new ReactorEventHandler();
         eventManager.registerEventHandler(reactorEventHandler);
+        eventManager.setDefaultEventHandler(ReactorEventHandler.class);
     }
 
     /**
@@ -38,10 +39,11 @@ public class ReactorEventHandlerTest {
     @Test
     public void testReactorEventHandlerWithTestEventObject() throws Exception {
         // Register Listener
-        Disposable disposable = eventManager.getEventHandler(ReactorEventHandler.class).onEvent(TestEventObject.class, event -> {
+        IDisposable disposable = eventManager.onEvent(TestEventObject.class, event -> {
             log.info("Received a event.");
             eventsProcessed = eventsProcessed + 1;
         });
+        Assertions.assertEquals(1, eventManager.getActiveSubscriptions().size());
 
         // dispatch
         eventManager.publish(new TestEventObject());
@@ -51,6 +53,7 @@ public class ReactorEventHandlerTest {
         disposable.dispose();
 
         // Verify
+        Assertions.assertEquals(0, eventManager.getActiveSubscriptions().size());
         Assertions.assertEquals(1, eventsProcessed, "one event should have been handled");
     }
 
