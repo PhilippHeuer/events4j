@@ -17,10 +17,8 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.Disposable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 /**
@@ -62,8 +60,12 @@ public class EventManager implements IEventManager {
     /**
      * Holds all active subscriptions
      */
-    @Getter
-    private final List<IEventSubscription> activeSubscriptions = Collections.synchronizedList(new ArrayList<>());
+    private final Map<String, IEventSubscription> activeSubscriptions = Collections.synchronizedMap(new HashMap<>());
+
+    /**
+     * Holds the current sequence for consumer registrations
+     */
+    private final AtomicInteger consumerSequence = new AtomicInteger(1);
 
     /**
      * Constructor
@@ -81,6 +83,13 @@ public class EventManager implements IEventManager {
         if (!eventHandlers.contains(eventHandler)) {
             eventHandlers.add(eventHandler);
         }
+    }
+
+    /**
+     * @return returns the list of all active subscriptions
+     */
+    public List<IEventSubscription> getActiveSubscriptions() {
+        return Collections.unmodifiableList(new ArrayList<>(activeSubscriptions.values()));
     }
 
     /**
@@ -186,7 +195,7 @@ public class EventManager implements IEventManager {
      * @param <E>        the event type
      * @return a new Disposable of the given eventType
      */
-    public <E> IDisposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
+    public <E> IEventSubscription onEvent(Class<E> eventClass, Consumer<E> consumer) {
         return onEvent(consumer.getClass().getCanonicalName(), eventClass, consumer);
     }
 
@@ -199,7 +208,7 @@ public class EventManager implements IEventManager {
      * @param <E>        the event type
      * @return           a new Disposable of the given eventType
      */
-    public <E> IDisposable onEvent(String id, Class<E> eventClass, Consumer<E> consumer) {
+    public <E> IEventSubscription onEvent(String id, Class<E> eventClass, Consumer<E> consumer) {
         return onEvent(id, eventClass, consumer, false);
     }
 
@@ -212,7 +221,7 @@ public class EventManager implements IEventManager {
      * @param <E>        the event type
      * @return           a new Disposable of the given eventType, null if a consumer for the given id was already registered
      */
-    public <E> IDisposable onEventIfIdUnique(String id, Class<E> eventClass, Consumer<E> consumer) {
+    public <E> IEventSubscription onEventIfIdUnique(String id, Class<E> eventClass, Consumer<E> consumer) {
         return onEvent(id, eventClass, consumer, true);
     }
 
@@ -226,10 +235,13 @@ public class EventManager implements IEventManager {
      * @param idUnique   enforce that every unique id can only be registered on one active subscription?
      * @return           a new Disposable of the given eventType
      */
-    private <E> IDisposable onEvent(String id, Class<E> eventClass, Consumer<E> consumer, boolean idUnique) {
+    private <E> IEventSubscription onEvent(String id, Class<E> eventClass, Consumer<E> consumer, boolean idUnique) {
         // return null if a disposable with the given id is already present when idUnique is set
-        if (idUnique && activeSubscriptions.stream().map(IEventSubscription::getId).anyMatch(s -> s.equalsIgnoreCase(id))) {
+        if (idUnique && activeSubscriptions.containsKey(id)) {
             return null;
+        } else if (activeSubscriptions.containsKey(id)) {
+            // register a id that is already present, but no unique constraint
+            id = id + "/" + consumerSequence.getAndAdd(1);
         }
 
         String eventHandler = defaultEventHandler;
@@ -278,7 +290,7 @@ public class EventManager implements IEventManager {
         isStopped = true;
 
         // cancel subscriptions
-        activeSubscriptions.forEach(IDisposable::dispose);
+        getActiveSubscriptions().forEach(IDisposable::dispose);
 
         // close eventhandlers
         eventHandlers.forEach(eventHandler -> {

@@ -3,6 +3,7 @@ package com.github.philippheuer.events4j.core;
 import com.github.philippheuer.events4j.api.domain.IDisposable;
 import com.github.philippheuer.events4j.core.domain.TestEventObject;
 import com.github.philippheuer.events4j.simple.SimpleEventHandler;
+import com.github.philippheuer.events4j.simple.domain.SimpleDisposableWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -47,6 +48,20 @@ public class EventManagerTest {
         Assertions.assertEquals(1, eventManager.getActiveSubscriptions().size());
         Assertions.assertNotNull(disposableA);
         Assertions.assertNull(disposableB);
+    }
+
+    @Test
+    public void testIdAssignment() {
+        // Register Listener
+        SimpleDisposableWrapper disposableA = (SimpleDisposableWrapper) eventManager.onEvent("test", TestEventObject.class, System.out::println);
+        SimpleDisposableWrapper disposableB = (SimpleDisposableWrapper)eventManager.onEvent("test", TestEventObject.class, System.out::println);
+
+        // Verify
+        Assertions.assertEquals(2, eventManager.getActiveSubscriptions().size());
+        Assertions.assertNotNull(disposableA);
+        Assertions.assertEquals(disposableA.getId(), "test");
+        Assertions.assertNotNull(disposableB);
+        Assertions.assertEquals(disposableB.getId(), "test/1");
     }
 
     @AfterAll
