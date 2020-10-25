@@ -3,20 +3,22 @@ package com.github.philippheuer.events4j.core;
 import com.github.philippheuer.events4j.api.IEventManager;
 import com.github.philippheuer.events4j.api.domain.IDisposable;
 import com.github.philippheuer.events4j.api.domain.IEvent;
+import com.github.philippheuer.events4j.api.domain.IEventSubscription;
 import com.github.philippheuer.events4j.api.service.IEventHandler;
 import com.github.philippheuer.events4j.api.service.IServiceMediator;
 import com.github.philippheuer.events4j.core.services.ServiceMediator;
 import com.github.philippheuer.events4j.reactor.ReactorEventHandler;
 import com.github.philippheuer.events4j.reactor.util.ReactorDisposableWrapper;
 import com.github.philippheuer.events4j.simple.SimpleEventHandler;
+import com.github.philippheuer.events4j.simple.domain.SimpleDisposableWrapper;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.Disposable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -45,12 +47,7 @@ public class EventManager implements IEventManager {
     /**
      * Event Handlers
      */
-    private List<IEventHandler> eventHandlers = new ArrayList<>();
-
-    /**
-     * Annotation based event manager state
-     */
-    private boolean annotationEventManagerState = false;
+    private final List<IEventHandler> eventHandlers = new ArrayList<>();
 
     /**
      * is Stopped?
@@ -60,8 +57,13 @@ public class EventManager implements IEventManager {
     /**
      * Default EventHandler
      */
-    @Setter
     private String defaultEventHandler;
+
+    /**
+     * Holds all active subscriptions
+     */
+    @Getter
+    private final List<IEventSubscription> activeSubscriptions = Collections.synchronizedList(new ArrayList<>());
 
     /**
      * Constructor
@@ -184,7 +186,52 @@ public class EventManager implements IEventManager {
      * @param <E>        the event type
      * @return a new Disposable of the given eventType
      */
-    public <E extends Object> IDisposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
+    public <E> IDisposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
+        return onEvent(consumer.getClass().getCanonicalName(), eventClass, consumer);
+    }
+
+    /**
+     * Registers a named consumer based default event handler if supported
+     *
+     * @param id         unique name or id for this consumer
+     * @param eventClass the event class to obtain events from
+     * @param consumer   the event consumer / handler method
+     * @param <E>        the event type
+     * @return           a new Disposable of the given eventType
+     */
+    public <E> IDisposable onEvent(String id, Class<E> eventClass, Consumer<E> consumer) {
+        return onEvent(id, eventClass, consumer, false);
+    }
+
+    /**
+     * Registers a named consumer if no consumer with the same name is registered yet
+     *
+     * @param id         unique name or id for this consumer
+     * @param eventClass the event class to obtain events from
+     * @param consumer   the event consumer / handler method
+     * @param <E>        the event type
+     * @return           a new Disposable of the given eventType, null if a consumer for the given id was already registered
+     */
+    public <E> IDisposable onEventIfIdUnique(String id, Class<E> eventClass, Consumer<E> consumer) {
+        return onEvent(id, eventClass, consumer, true);
+    }
+
+    /**
+     * Registers a named consumer based default event handler if supported
+     *
+     * @param id         unique name or id for this consumer
+     * @param eventClass the event class to obtain events from
+     * @param consumer   the event consumer / handler method
+     * @param <E>        the event type
+     * @param idUnique   enforce that every unique id can only be registered on one active subscription?
+     * @return           a new Disposable of the given eventType
+     */
+    private <E> IDisposable onEvent(String id, Class<E> eventClass, Consumer<E> consumer, boolean idUnique) {
+        // return null if a disposable with the given id is already present when idUnique is set
+        if (idUnique && activeSubscriptions.stream().map(IEventSubscription::getId).anyMatch(s -> s.equalsIgnoreCase(id))) {
+            return null;
+        }
+
         String eventHandler = defaultEventHandler;
         if (eventHandler == null) {
             if (eventHandlers.size() == 1) {
@@ -195,10 +242,11 @@ public class EventManager implements IEventManager {
         }
 
         if ("com.github.philippheuer.events4j.simple.SimpleEventHandler".equalsIgnoreCase(eventHandler)) {
-            return getEventHandler(SimpleEventHandler.class).onEvent(eventClass, consumer);
+            IDisposable disposable = getEventHandler(SimpleEventHandler.class).onEvent(eventClass, consumer);
+            return new SimpleDisposableWrapper(disposable, id, eventClass, consumer, activeSubscriptions);
         } else if ("com.github.philippheuer.events4j.reactor.ReactorEventHandler".equalsIgnoreCase(eventHandler)) {
             Disposable disposable = getEventHandler(ReactorEventHandler.class).onEvent(eventClass, consumer);
-            return new ReactorDisposableWrapper(disposable);
+            return new ReactorDisposableWrapper(disposable, id, eventClass, consumer, activeSubscriptions);
         }
 
         throw new RuntimeException("EventHandler " + eventHandler + " does not support EventManager.onEvent!");
@@ -209,6 +257,7 @@ public class EventManager implements IEventManager {
      *
      * @param eventHandler eventHandler
      */
+    @SuppressWarnings("rawtypes")
     public void setDefaultEventHandler(Class eventHandler) {
         this.defaultEventHandler = eventHandler.getCanonicalName();
     }
@@ -227,6 +276,11 @@ public class EventManager implements IEventManager {
      */
     public void close() {
         isStopped = true;
+
+        // cancel subscriptions
+        activeSubscriptions.forEach(IDisposable::dispose);
+
+        // close eventhandlers
         eventHandlers.forEach(eventHandler -> {
             try {
                 eventHandler.close();
