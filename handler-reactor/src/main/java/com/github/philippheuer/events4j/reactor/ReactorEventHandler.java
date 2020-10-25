@@ -48,7 +48,7 @@ public class ReactorEventHandler implements IEventHandler {
      * Creates a new ReactorEventHandler
      */
     public ReactorEventHandler() {
-        this.scheduler = ForkJoinPoolScheduler.create("events4j-events", Runtime.getRuntime().availableProcessors() > 4 ? Runtime.getRuntime().availableProcessors() : 4);
+        this.scheduler = ForkJoinPoolScheduler.create("events4j-events", Math.max(Runtime.getRuntime().availableProcessors(), 4));
         this.processor = EmitterProcessor.create(8192, true);
         this.eventSink = processor.sink(FluxSink.OverflowStrategy.BUFFER);
     }
