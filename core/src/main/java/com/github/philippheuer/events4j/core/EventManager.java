@@ -210,7 +210,7 @@ public class EventManager implements IEventManager {
      * @param <E>        the event type
      * @return           a new Disposable of the given eventType
      */
-    public <E> IEventSubscription onEvent(String id, Class<E> eventClass, Consumer<E> consumer) {
+    public synchronized <E> IEventSubscription onEvent(String id, Class<E> eventClass, Consumer<E> consumer) {
         // return null if a disposable with the given id is already present when idUnique is set
         if (activeSubscriptions.containsKey(id)) {
             return null;
