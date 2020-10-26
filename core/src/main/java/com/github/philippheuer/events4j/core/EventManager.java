@@ -188,7 +188,7 @@ public class EventManager implements IEventManager {
     }
 
     /**
-     * Registers a new consumer based default event handler if supported
+     * Registers a event consumer
      *
      * @param eventClass the event class to obtain events from
      * @param consumer   the event consumer / handler method
@@ -196,52 +196,24 @@ public class EventManager implements IEventManager {
      * @return a new Disposable of the given eventType
      */
     public <E> IEventSubscription onEvent(Class<E> eventClass, Consumer<E> consumer) {
-        return onEvent(consumer.getClass().getCanonicalName(), eventClass, consumer);
+        return onEvent(consumer.getClass().getCanonicalName()+"/"+consumerSequence.getAndAdd(1), eventClass, consumer);
     }
 
     /**
-     * Registers a named consumer based default event handler if supported
+     * Registers a event consumer and assigns a id
+     * <p>
+     * This method will return null if the id was already used.
      *
-     * @param id         unique name or id for this consumer
+     * @param id         unique id used to identify this consumer
      * @param eventClass the event class to obtain events from
      * @param consumer   the event consumer / handler method
      * @param <E>        the event type
      * @return           a new Disposable of the given eventType
      */
     public <E> IEventSubscription onEvent(String id, Class<E> eventClass, Consumer<E> consumer) {
-        return onEvent(id, eventClass, consumer, false);
-    }
-
-    /**
-     * Registers a named consumer if no consumer with the same name is registered yet
-     *
-     * @param id         unique name or id for this consumer
-     * @param eventClass the event class to obtain events from
-     * @param consumer   the event consumer / handler method
-     * @param <E>        the event type
-     * @return           a new Disposable of the given eventType, null if a consumer for the given id was already registered
-     */
-    public <E> IEventSubscription onEventIfIdUnique(String id, Class<E> eventClass, Consumer<E> consumer) {
-        return onEvent(id, eventClass, consumer, true);
-    }
-
-    /**
-     * Registers a named consumer based default event handler if supported
-     *
-     * @param id         unique name or id for this consumer
-     * @param eventClass the event class to obtain events from
-     * @param consumer   the event consumer / handler method
-     * @param <E>        the event type
-     * @param idUnique   enforce that every unique id can only be registered on one active subscription?
-     * @return           a new Disposable of the given eventType
-     */
-    private <E> IEventSubscription onEvent(String id, Class<E> eventClass, Consumer<E> consumer, boolean idUnique) {
         // return null if a disposable with the given id is already present when idUnique is set
-        if (idUnique && activeSubscriptions.containsKey(id)) {
+        if (activeSubscriptions.containsKey(id)) {
             return null;
-        } else if (activeSubscriptions.containsKey(id)) {
-            // register a id that is already present, but no unique constraint
-            id = id + "/" + consumerSequence.getAndAdd(1);
         }
 
         String eventHandler = defaultEventHandler;
