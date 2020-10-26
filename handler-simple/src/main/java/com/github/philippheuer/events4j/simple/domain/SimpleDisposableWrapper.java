@@ -42,10 +42,7 @@ public class SimpleDisposableWrapper implements IEventSubscription {
     @Override
     public void dispose() {
         if (!disposable.isDisposed()) {
-            // remove consumer
             disposable.dispose();
-
-            // remove from active subscriptions
             activeSubscriptions.remove(id);
         }
     }

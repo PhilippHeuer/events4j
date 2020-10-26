@@ -6,8 +6,10 @@ public interface IEventSubscription extends IDisposable {
 
     String getId();
 
+    @SuppressWarnings("rawtypes")
     Class getEventType();
 
+    @SuppressWarnings("rawtypes")
     Consumer getConsumer();
 
 }
