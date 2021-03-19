@@ -87,8 +87,7 @@ public class ReactorEventHandler implements IEventHandler {
     public <E extends Object> Disposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
         Flux<E> flux = processor
                 .publishOn(this.scheduler)
-                .ofType(eventClass)
-                .limitRequest(15);
+                .ofType(eventClass);
 
         Subscriber<E> subscription = new Events4JSubscriber(consumer);
         flux.subscribe(subscription);
