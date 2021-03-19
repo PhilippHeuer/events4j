@@ -14,6 +14,7 @@ import reactor.core.scheduler.Scheduler;
 import reactor.scheduler.forkjoin.ForkJoinPoolScheduler;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -42,7 +43,7 @@ public class ReactorEventHandler implements IEventHandler {
      * Active Subscriptions
      */
     @Getter
-    private final List<Disposable> subscriptions = new ArrayList<>();
+    private final List<Disposable> subscriptions = Collections.synchronizedList(new ArrayList<>());
 
     /**
      * Creates a new ReactorEventHandler
