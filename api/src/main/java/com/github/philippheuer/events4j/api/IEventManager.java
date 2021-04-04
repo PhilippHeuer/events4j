@@ -61,6 +61,13 @@ public interface IEventManager extends AutoCloseable {
     <E> E getEventHandler(Class<E> eventHandlerClass);
 
     /**
+     * Gets all registered event handlers
+     *
+     * @return a list of all registered event handlers
+     */
+    List<IEventHandler> getEventHandlers();
+
+    /**
      * Gets a list of all active subscriptions
      *
      * @return a list that holds IEventSubscription`s
