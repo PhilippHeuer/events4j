@@ -19,6 +19,9 @@ public class Events4JSpringAutoConfiguration {
     @Autowired
     SpringEventHandler springEventHandler;
 
+    /**
+     * @return a IEventManager with a registered spring event handler
+     */
     @Bean
     public IEventManager getEventManager() {
         IEventManager eventManager = new EventManager();

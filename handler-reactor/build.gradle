@@ -1,13 +1,15 @@
 // In this section you declare the dependencies for your production and test code
 dependencies {
 	// Modules
-	compile project(':' + rootProject.name + '-api')
-	testCompile project(':' + rootProject.name + '-core')
-	
+	api project(':' + rootProject.name + '-api')
+
+	// Test
+	testImplementation project(':' + rootProject.name + '-core')
+
 	// Reactor
-	compile group: 'io.projectreactor', name: 'reactor-core'
-	compile group: 'io.projectreactor.addons', name: 'reactor-extra'
-	testCompile group: 'io.projectreactor', name: 'reactor-test'
+	api group: 'io.projectreactor', name: 'reactor-core'
+	api group: 'io.projectreactor.addons', name: 'reactor-extra'
+	testImplementation group: 'io.projectreactor', name: 'reactor-test'
 }
 
 // Artifact Info

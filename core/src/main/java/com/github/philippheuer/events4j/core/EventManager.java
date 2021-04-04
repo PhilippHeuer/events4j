@@ -1,23 +1,25 @@
 package com.github.philippheuer.events4j.core;
 
 import com.github.philippheuer.events4j.api.IEventManager;
+import com.github.philippheuer.events4j.api.domain.DisposableWrapper;
 import com.github.philippheuer.events4j.api.domain.IDisposable;
 import com.github.philippheuer.events4j.api.domain.IEvent;
 import com.github.philippheuer.events4j.api.domain.IEventSubscription;
 import com.github.philippheuer.events4j.api.service.IEventHandler;
 import com.github.philippheuer.events4j.api.service.IServiceMediator;
 import com.github.philippheuer.events4j.core.services.ServiceMediator;
-import com.github.philippheuer.events4j.reactor.ReactorEventHandler;
-import com.github.philippheuer.events4j.reactor.util.ReactorDisposableWrapper;
-import com.github.philippheuer.events4j.simple.SimpleEventHandler;
-import com.github.philippheuer.events4j.simple.domain.SimpleDisposableWrapper;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.Disposable;
 
-import java.util.*;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -68,6 +70,11 @@ public class EventManager implements IEventManager {
     private final AtomicInteger consumerSequence = new AtomicInteger(1);
 
     /**
+     * EventHandler Class Cache
+     */
+    private final Map<String, Class<? extends IEventHandler>> eventHandlerCache = new HashMap<>();
+
+    /**
      * Constructor
      */
     public EventManager() {
@@ -82,6 +89,7 @@ public class EventManager implements IEventManager {
     public void registerEventHandler(IEventHandler eventHandler) {
         if (!eventHandlers.contains(eventHandler)) {
             eventHandlers.add(eventHandler);
+            eventHandlerCache.put(eventHandler.getClass().getCanonicalName(), eventHandler.getClass());
         }
     }
 
@@ -99,24 +107,22 @@ public class EventManager implements IEventManager {
         // Annotation
         try {
             // check if class is present
-            Class.forName("com.github.philippheuer.events4j.simple.SimpleEventHandler");
+            Class<IEventHandler> handlerClass = (Class<IEventHandler>) Class.forName("com.github.philippheuer.events4j.simple.SimpleEventHandler");
 
             log.info("Auto Discovery: SimpleEventHandler registered!");
-            SimpleEventHandler simpleEventHandler = new SimpleEventHandler();
-            registerEventHandler(simpleEventHandler);
-        } catch (ClassNotFoundException ex) {
+            registerEventHandler(handlerClass.getDeclaredConstructor(new Class[0]).newInstance());
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException ex) {
             log.debug("Auto Discovery: SimpleEventHandler not available!");
         }
 
         // Reactor
         try {
             // check if class is present
-            Class.forName("com.github.philippheuer.events4j.reactor.ReactorEventHandler");
+            Class<IEventHandler> handlerClass = (Class<IEventHandler>) Class.forName("com.github.philippheuer.events4j.reactor.ReactorEventHandler");
 
             log.info("Auto Discovery: ReactorEventHandler registered!");
-            ReactorEventHandler reactorEventHandler = new ReactorEventHandler();
-            registerEventHandler(reactorEventHandler);
-        } catch (ClassNotFoundException ex) {
+            registerEventHandler(handlerClass.getDeclaredConstructor(new Class[0]).newInstance());
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException ex) {
             log.debug("Auto Discovery: ReactorEventHandler not available!");
         }
     }
@@ -166,7 +172,7 @@ public class EventManager implements IEventManager {
      * @param eventHandlerClass the event handler class
      * @return boolean
      */
-    public boolean hasEventHandler(Class eventHandlerClass) {
+    public boolean hasEventHandler(Class<? extends IEventHandler> eventHandlerClass) {
         Optional<IEventHandler> eventHandler = getEventHandlers().stream().filter(h -> h.getClass().getName().equalsIgnoreCase(eventHandlerClass.getName())).findFirst();
         return eventHandler.isPresent();
     }
@@ -178,7 +184,7 @@ public class EventManager implements IEventManager {
      * @param <E>               the eventHandler type
      * @return a reference to the requested event handler
      */
-    public <E> E getEventHandler(Class<E> eventHandlerClass) {
+    public <E extends IEventHandler> E getEventHandler(Class<E> eventHandlerClass) {
         Optional<E> eventHandler = getEventHandlers().stream().filter(h -> h.getClass().getName().equalsIgnoreCase(eventHandlerClass.getName())).map(h -> (E) h).findFirst();
         if (eventHandler.isPresent()) {
             return eventHandler.get();
@@ -216,24 +222,27 @@ public class EventManager implements IEventManager {
             return null;
         }
 
+        // use default event handler (or automatically set default event handler if exactly one handler has been registered)
         String eventHandler = defaultEventHandler;
         if (eventHandler == null) {
             if (eventHandlers.size() == 1) {
-                eventHandler = eventHandlers.get(0).getClass().getCanonicalName();
+                defaultEventHandler = eventHandlers.get(0).getClass().getCanonicalName();
+                eventHandler = defaultEventHandler;
             } else {
                 throw new RuntimeException("When more than one eventHandler has been registered you have to specify the defaultEventHandler using EventManager#setDefaultEventHandler!");
             }
         }
 
-        if ("com.github.philippheuer.events4j.simple.SimpleEventHandler".equalsIgnoreCase(eventHandler)) {
-            IDisposable disposable = getEventHandler(SimpleEventHandler.class).onEvent(eventClass, consumer);
-            return new SimpleDisposableWrapper(disposable, id, eventClass, consumer, activeSubscriptions);
-        } else if ("com.github.philippheuer.events4j.reactor.ReactorEventHandler".equalsIgnoreCase(eventHandler)) {
-            Disposable disposable = getEventHandler(ReactorEventHandler.class).onEvent(eventClass, consumer);
-            return new ReactorDisposableWrapper(disposable, id, eventClass, consumer, activeSubscriptions);
+        // return wrapped disposable
+        if (eventHandlerCache.containsKey(eventHandler)) {
+            IDisposable disposable = getEventHandler(eventHandlerCache.get(eventHandler)).onEvent(eventClass, consumer);
+            if (disposable != null) {
+                return new DisposableWrapper(disposable, id, eventClass, consumer, activeSubscriptions);
+            }
+
         }
 
-        throw new RuntimeException("EventHandler " + eventHandler + " does not support EventManager.onEvent!");
+        throw new RuntimeException("EventHandler " + eventHandler + " has not been registered for EventManager.onEvent!");
     }
 
     /**

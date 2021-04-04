@@ -1,8 +1,10 @@
 // In this section you declare the dependencies for your production and test code
 dependencies {
 	// Modules
-	compile project(':' + rootProject.name + '-api')
-	testCompile project(':' + rootProject.name + '-core')
+	api project(':' + rootProject.name + '-api')
+
+	// Test
+	testImplementation project(':' + rootProject.name + '-core')
 }
 
 // Artifact Info

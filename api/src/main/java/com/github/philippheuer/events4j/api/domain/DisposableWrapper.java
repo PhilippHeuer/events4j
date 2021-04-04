@@ -1,7 +1,5 @@
-package com.github.philippheuer.events4j.simple.domain;
+package com.github.philippheuer.events4j.api.domain;
 
-import com.github.philippheuer.events4j.api.domain.IDisposable;
-import com.github.philippheuer.events4j.api.domain.IEventSubscription;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -10,7 +8,7 @@ import java.util.function.Consumer;
 
 @Getter
 @ToString
-public class SimpleDisposableWrapper implements IEventSubscription {
+public class DisposableWrapper implements IEventSubscription {
 
     private final IDisposable disposable;
 
@@ -26,7 +24,7 @@ public class SimpleDisposableWrapper implements IEventSubscription {
     private final Map<String, IEventSubscription> activeSubscriptions;
 
     @SuppressWarnings("rawtypes")
-    public SimpleDisposableWrapper(IDisposable disposable, String id, Class eventType, Consumer consumer, Map<String, IEventSubscription> activeSubscriptions) {
+    public DisposableWrapper(IDisposable disposable, String id, Class eventType, Consumer consumer, Map<String, IEventSubscription> activeSubscriptions) {
         this.disposable = disposable;
         this.id = id;
         this.eventType = eventType;

@@ -1,11 +1,11 @@
 package com.github.philippheuer.events4j.reactor;
 
+import com.github.philippheuer.events4j.api.domain.IDisposable;
 import com.github.philippheuer.events4j.api.service.IEventHandler;
 import com.github.philippheuer.events4j.reactor.util.Events4JSubscriber;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Subscriber;
-import reactor.core.Disposable;
 import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxProcessor;
@@ -13,9 +13,6 @@ import reactor.core.publisher.FluxSink;
 import reactor.core.scheduler.Scheduler;
 import reactor.scheduler.forkjoin.ForkJoinPoolScheduler;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.function.Consumer;
 
 @Slf4j
@@ -38,12 +35,6 @@ public class ReactorEventHandler implements IEventHandler {
      */
     @Getter
     private final FluxSink<Object> eventSink;
-
-    /**
-     * Active Subscriptions
-     */
-    @Getter
-    private final List<Disposable> subscriptions = Collections.synchronizedList(new ArrayList<>());
 
     /**
      * Creates a new ReactorEventHandler
@@ -85,7 +76,7 @@ public class ReactorEventHandler implements IEventHandler {
      * @param <E>        the event type
      * @return a new {@link reactor.core.publisher.Flux} of the given eventType
      */
-    public <E extends Object> Disposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
+    public <E extends Object> IDisposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
         Flux<E> flux = processor
                 .publishOn(this.scheduler)
                 .ofType(eventClass);
@@ -93,16 +84,13 @@ public class ReactorEventHandler implements IEventHandler {
         Subscriber<E> subscription = new Events4JSubscriber(consumer);
         flux.subscribe(subscription);
 
-        return (Disposable) subscription;
+        return (IDisposable) subscription;
     }
 
     /**
      * Shutdown
      */
     public void close() {
-        // cancel all subscriptions
-        subscriptions.forEach(Disposable::dispose);
-
         // complete sink
         eventSink.complete();
 

@@ -1,6 +1,7 @@
 package com.github.philippheuer.events4j.reactor;
 
 import com.github.philippheuer.events4j.api.domain.IDisposable;
+import com.github.philippheuer.events4j.api.service.IEventHandler;
 import com.github.philippheuer.events4j.core.EventManager;
 import com.github.philippheuer.events4j.reactor.domain.TestEvent;
 import com.github.philippheuer.events4j.reactor.domain.TestEventObject;
@@ -25,12 +26,14 @@ public class ReactorEventHandlerTest {
 
     private static int eventsProcessed = 0;
 
+    private static final Class<? extends IEventHandler> REACTOR_EVENTHANDLER = ReactorEventHandler.class;
+
     @BeforeAll
     public static void beforeAll() {
         eventManager = new EventManager();
         ReactorEventHandler reactorEventHandler = new ReactorEventHandler();
         eventManager.registerEventHandler(reactorEventHandler);
-        eventManager.setDefaultEventHandler(ReactorEventHandler.class);
+        eventManager.setDefaultEventHandler(REACTOR_EVENTHANDLER);
     }
 
     /**
@@ -63,7 +66,7 @@ public class ReactorEventHandlerTest {
     @Test
     public void testReactorEventHandlerWithTestEvent() throws Exception {
         // Register Listener
-        Disposable disposable = eventManager.getEventHandler(ReactorEventHandler.class).onEvent(TestEvent.class, event -> {
+        IDisposable disposable = eventManager.getEventHandler(REACTOR_EVENTHANDLER).onEvent(TestEvent.class, event -> {
             log.info("Received event [{}] that was fired at {}.", event.getEventId(), event.getFiredAtInstant().toString());
             eventsProcessed = eventsProcessed + 1;
         });

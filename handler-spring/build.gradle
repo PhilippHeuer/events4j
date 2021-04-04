@@ -1,11 +1,14 @@
 // In this section you declare the dependencies for your production and test code
 dependencies {
 	// Modules
-	compile project(':' + rootProject.name + '-api')
-	compile project(':' + rootProject.name + '-core')
+	api project(':' + rootProject.name + '-api')
+	api project(':' + rootProject.name + '-core')
+
+	// Test
+	testImplementation project(':' + rootProject.name + '-core')
 	
 	// Spring
-	compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.3.1.RELEASE'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.4.3'
 
 }
 

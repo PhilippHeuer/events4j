@@ -48,8 +48,7 @@ public interface IEventManager extends AutoCloseable {
      * @param eventHandlerClass the event handler class
      * @return boolean
      */
-    @SuppressWarnings("rawtypes")
-    boolean hasEventHandler(Class eventHandlerClass);
+    boolean hasEventHandler(Class<? extends IEventHandler> eventHandlerClass);
 
     /**
      * Retrieves a EventHandler of the provided type
@@ -58,7 +57,7 @@ public interface IEventManager extends AutoCloseable {
      * @param <E> the eventHandler type
      * @return a reference to the requested event handler
      */
-    <E> E getEventHandler(Class<E> eventHandlerClass);
+    <E extends IEventHandler> E getEventHandler(Class<E> eventHandlerClass);
 
     /**
      * Gets all registered event handlers

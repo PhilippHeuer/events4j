@@ -3,7 +3,6 @@ package com.github.philippheuer.events4j.core;
 import com.github.philippheuer.events4j.api.domain.IDisposable;
 import com.github.philippheuer.events4j.core.domain.TestEventObject;
 import com.github.philippheuer.events4j.simple.SimpleEventHandler;
-import com.github.philippheuer.events4j.simple.domain.SimpleDisposableWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
