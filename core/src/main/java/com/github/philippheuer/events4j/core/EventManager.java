@@ -52,7 +52,7 @@ public class EventManager implements IEventManager {
     /**
      * is Stopped?
      */
-    private boolean isStopped = false;
+    private volatile boolean isStopped = false;
 
     /**
      * Default EventHandler
@@ -103,11 +103,12 @@ public class EventManager implements IEventManager {
     /**
      * Automatic discovery of optional components
      */
+    @SuppressWarnings("unchecked")
     public void autoDiscovery() {
         // Annotation
         try {
             // check if class is present
-            Class<IEventHandler> handlerClass = (Class<IEventHandler>) Class.forName("com.github.philippheuer.events4j.simple.SimpleEventHandler");
+            Class<? extends IEventHandler> handlerClass = (Class<? extends IEventHandler>) Class.forName("com.github.philippheuer.events4j.simple.SimpleEventHandler");
 
             log.info("Auto Discovery: SimpleEventHandler registered!");
             registerEventHandler(handlerClass.getDeclaredConstructor(new Class[0]).newInstance());
@@ -118,7 +119,7 @@ public class EventManager implements IEventManager {
         // Reactor
         try {
             // check if class is present
-            Class<IEventHandler> handlerClass = (Class<IEventHandler>) Class.forName("com.github.philippheuer.events4j.reactor.ReactorEventHandler");
+            Class<? extends IEventHandler> handlerClass = (Class<? extends IEventHandler>) Class.forName("com.github.philippheuer.events4j.reactor.ReactorEventHandler");
 
             log.info("Auto Discovery: ReactorEventHandler registered!");
             registerEventHandler(handlerClass.getDeclaredConstructor(new Class[0]).newInstance());
@@ -167,14 +168,13 @@ public class EventManager implements IEventManager {
     }
 
     /**
-     * Checks if a fiven eventHandler is registered / present
+     * Checks if a given eventHandler is registered / present
      *
      * @param eventHandlerClass the event handler class
      * @return boolean
      */
     public boolean hasEventHandler(Class<? extends IEventHandler> eventHandlerClass) {
-        Optional<IEventHandler> eventHandler = getEventHandlers().stream().filter(h -> h.getClass().getName().equalsIgnoreCase(eventHandlerClass.getName())).findFirst();
-        return eventHandler.isPresent();
+        return getEventHandlers().stream().anyMatch(h -> h.getClass().getName().equalsIgnoreCase(eventHandlerClass.getName()));
     }
 
     /**
@@ -185,12 +185,8 @@ public class EventManager implements IEventManager {
      * @return a reference to the requested event handler
      */
     public <E extends IEventHandler> E getEventHandler(Class<E> eventHandlerClass) {
-        Optional<E> eventHandler = getEventHandlers().stream().filter(h -> h.getClass().getName().equalsIgnoreCase(eventHandlerClass.getName())).map(h -> (E) h).findFirst();
-        if (eventHandler.isPresent()) {
-            return eventHandler.get();
-        }
-
-        throw new RuntimeException("No eventHandler of type " + eventHandlerClass.getName() + " is registered!");
+        Optional<E> eventHandler = getEventHandlers().stream().filter(h -> h.getClass().getName().equalsIgnoreCase(eventHandlerClass.getName())).map(h -> (E) h).findAny();
+        return eventHandler.orElseThrow(() -> new RuntimeException("No eventHandler of type " + eventHandlerClass.getName() + " is registered!"));
     }
 
     /**
@@ -234,12 +230,12 @@ public class EventManager implements IEventManager {
         }
 
         // return wrapped disposable
-        if (eventHandlerCache.containsKey(eventHandler)) {
-            IDisposable disposable = getEventHandler(eventHandlerCache.get(eventHandler)).onEvent(eventClass, consumer);
+        Class<? extends IEventHandler> handlerClass = eventHandlerCache.get(eventHandler);
+        if (handlerClass != null) {
+            IDisposable disposable = getEventHandler(handlerClass).onEvent(eventClass, consumer);
             if (disposable != null) {
                 return new DisposableWrapper(disposable, id, eventClass, consumer, activeSubscriptions);
             }
-
         }
 
         throw new RuntimeException("EventHandler " + eventHandler + " has not been registered for EventManager.onEvent!");

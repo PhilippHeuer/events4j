@@ -16,14 +16,11 @@ public class SimpleEventHandlerSubscription implements IDisposable {
     @Getter(AccessLevel.NONE)
     private final SimpleEventHandler simpleEventHandler;
 
-    @SuppressWarnings("rawtypes")
-    private final Class eventType;
+    private final Class<?> eventType;
 
-    @SuppressWarnings("rawtypes")
-    private final Consumer consumer;
+    private final Consumer<?> consumer;
 
-    @SuppressWarnings("rawtypes")
-    public SimpleEventHandlerSubscription(SimpleEventHandler simpleEventHandler, Class eventType, Consumer consumer) {
+    public SimpleEventHandlerSubscription(SimpleEventHandler simpleEventHandler, Class<?> eventType, Consumer<?> consumer) {
         this.simpleEventHandler = simpleEventHandler;
         this.eventType = eventType;
         this.consumer = consumer;

@@ -18,6 +18,6 @@ public interface IServiceMediator {
      * @param <T>          The type of the Service
      * @return The ServiceInstance
      */
-    <T extends Object> T getService(Class<T> serviceClass, String serviceName);
+    <T> T getService(Class<T> serviceClass, String serviceName);
 
 }

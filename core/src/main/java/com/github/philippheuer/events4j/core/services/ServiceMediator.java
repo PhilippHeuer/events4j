@@ -56,10 +56,11 @@ public final class ServiceMediator implements IServiceMediator {
      * @param <T>          The type of the Service
      * @return The ServiceInstance
      */
-    public <T extends Object> T getService(Class<T> serviceClass, String serviceName) {
+    public <T> T getService(Class<T> serviceClass, String serviceName) {
         Object serviceInstance = serviceReferences.get(serviceName);
 
         if (serviceClass.isInstance(serviceInstance)) {
+            //noinspection unchecked
             return (T) serviceReferences.get(serviceName);
         } else {
             throw new RuntimeException("Can't cast service " + serviceName + " to " + serviceClass.getSimpleName() + "!");

@@ -22,8 +22,7 @@ public class SimpleEventHandler implements IEventHandler {
      * Consumer based handlers
      */
     @Getter
-    @SuppressWarnings("rawtypes")
-    private final ConcurrentMap<Class<?>, List<Consumer>> consumerBasedHandlers = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Class<?>, List<Consumer<Object>>> consumerBasedHandlers = new ConcurrentHashMap<>();
 
     /**
      * Annotation based method listeners
@@ -49,9 +48,9 @@ public class SimpleEventHandler implements IEventHandler {
      */
     public <E> IDisposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
         // register
-        @SuppressWarnings("rawtypes")
-        final List<Consumer> eventHandlers = consumerBasedHandlers.computeIfAbsent(eventClass, s -> new CopyOnWriteArrayList<>());
-        eventHandlers.add(consumer);
+        final List<Consumer<Object>> eventHandlers = consumerBasedHandlers.computeIfAbsent(eventClass, s -> new CopyOnWriteArrayList<>());
+        //noinspection unchecked
+        eventHandlers.add((Consumer<Object>) consumer);
 
         // return disposable
         return new SimpleEventHandlerSubscription(this, eventClass, consumer);
@@ -97,13 +96,13 @@ public class SimpleEventHandler implements IEventHandler {
      */
     public void publish(Object event) {
         // consumer based handlers
-        final List<Consumer> eventConsumers = consumerBasedHandlers.get(event.getClass());
+        final List<Consumer<Object>> eventConsumers = consumerBasedHandlers.get(event.getClass());
         if (eventConsumers != null)
             eventConsumers.forEach(consumer -> consumer.accept(event));
 
         // annotation handlers
         if (methodListeners.size() > 0) {
-            for (Map.Entry<Class<? extends Object>, ConcurrentMap<Method, List<Object>>> e : methodListeners.entrySet()) {
+            for (Map.Entry<Class<?>, ConcurrentMap<Method, List<Object>>> e : methodListeners.entrySet()) {
                 if (e.getKey().isAssignableFrom(event.getClass())) {
                     ConcurrentMap<Method, List<Object>> eventClass = e.getValue();
                     eventClass.forEach((k, v) -> {

@@ -76,12 +76,12 @@ public class ReactorEventHandler implements IEventHandler {
      * @param <E>        the event type
      * @return a new {@link reactor.core.publisher.Flux} of the given eventType
      */
-    public <E extends Object> IDisposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
+    public <E> IDisposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
         Flux<E> flux = processor
                 .publishOn(this.scheduler)
                 .ofType(eventClass);
 
-        Subscriber<E> subscription = new Events4JSubscriber(consumer);
+        Subscriber<E> subscription = new Events4JSubscriber<>(consumer);
         flux.subscribe(subscription);
 
         return (IDisposable) subscription;
