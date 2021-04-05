@@ -1,6 +1,5 @@
 package com.github.philippheuer.events4j.api;
 
-
 import com.github.philippheuer.events4j.api.domain.IDisposable;
 import com.github.philippheuer.events4j.api.domain.IEventSubscription;
 import com.github.philippheuer.events4j.api.service.IEventHandler;
@@ -33,7 +32,7 @@ public interface IEventManager extends AutoCloseable {
      * @param <E>        the event type
      * @return a new Disposable of the given eventType
      */
-    <E extends Object> IDisposable onEvent(Class<E> eventClass, Consumer<E> consumer);
+    <E> IDisposable onEvent(Class<E> eventClass, Consumer<E> consumer);
 
     /**
      * Get the ServiceMediator
@@ -43,7 +42,7 @@ public interface IEventManager extends AutoCloseable {
     IServiceMediator getServiceMediator();
 
     /**
-     * Checks if a fiven eventHandler is registered / present
+     * Checks if a given eventHandler is registered / present
      *
      * @param eventHandlerClass the event handler class
      * @return boolean
@@ -72,4 +71,5 @@ public interface IEventManager extends AutoCloseable {
      * @return a list that holds IEventSubscription`s
      */
     List<IEventSubscription> getActiveSubscriptions();
+
 }

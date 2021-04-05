@@ -1,6 +1,5 @@
 package com.github.philippheuer.events4j.reactor.util;
 
-
 import com.github.philippheuer.events4j.api.domain.IDisposable;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -8,7 +7,7 @@ import reactor.core.Disposable;
 
 import java.util.function.Consumer;
 
-public class Events4JSubscriber<E extends Object> implements Subscriber<E>, Disposable, IDisposable {
+public class Events4JSubscriber<E> implements Subscriber<E>, Disposable, IDisposable {
 
     private Subscription subscription;
 
