@@ -2,7 +2,7 @@
 
 # Description
 
-A simple wrapper to dispatch/consume events using Reactor.
+A simple wrapper to dispatch/consume events.
 
 # Import
 
@@ -12,8 +12,8 @@ Add the repository to your pom.xml with:
 ```xml
 <repositories>
     <repository>
-      <id>jcenter</id>
-      <url>https://jcenter.bintray.com/</url>
+      <id>central</id>
+      <url>https://repo1.maven.org/maven2/</url>
     </repository>
 </repositories>
 ```
@@ -23,7 +23,7 @@ and the dependency: (latest, you should use the actual version here)
 <dependency>
     <groupId>com.github.philippheuer.events4j</groupId>
     <artifactId>events4j</artifactId>
-    <version>0.9.0</version>
+    <version>0.9.6</version>
     <type>pom</type>
 </dependency>
 ```
@@ -33,13 +33,13 @@ Gradle:
 Add the repository to your build.gradle with:
 ```groovy
 repositories {
-	jcenter()
+    mavenCentral()
 }
 ```
 
 and the dependency:
 ```groovy
-compile 'com.github.philippheuer.events4j:events4j:0.9.0'
+compile 'com.github.philippheuer.events4j:events4j:0.9.6'
 ```
 
 # Usage
