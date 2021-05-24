@@ -6,7 +6,7 @@ dependencies {
 	testImplementation(testFixtures(project(":events4j-core")))
 
 	// Spring
-	implementation(group = "org.springframework.boot", name = "spring-boot-starter", version = "2.4.5")
+	implementation(group = "org.springframework.boot", name = "spring-boot-starter", version = "2.5.0")
 }
 
 publishing.publications.withType<MavenPublication> {
