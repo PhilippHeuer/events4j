@@ -8,8 +8,6 @@ import com.github.philippheuer.events4j.api.domain.IEventSubscription;
 import com.github.philippheuer.events4j.api.service.IEventHandler;
 import com.github.philippheuer.events4j.api.service.IServiceMediator;
 import com.github.philippheuer.events4j.core.services.ServiceMediator;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Metrics;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,11 +31,6 @@ import java.util.function.Consumer;
 @Getter
 @Slf4j
 public class EventManager implements IEventManager {
-
-    /**
-     * Registry
-     */
-    private final MeterRegistry metricsRegistry = Metrics.globalRegistry;
 
     /**
      * Holds the ServiceMediator
@@ -139,9 +132,6 @@ public class EventManager implements IEventManager {
             log.warn("Tried to dispatch a event to a closed eventManager!");
             return;
         }
-
-        // metrics
-        metricsRegistry.counter("events4j.published", "name", event.getClass().getSimpleName()).increment();
 
         // implements IEvent?
         if (event instanceof IEvent) {
