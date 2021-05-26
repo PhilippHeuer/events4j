@@ -1,9 +1,9 @@
 // In this section you declare the dependencies for your production and test code
 dependencies {
 	// Project
-	api(project(":events4j-api"))
-	testImplementation(project(":events4j-core"))
-	testImplementation(testFixtures(project(":events4j-core")))
+	api(project(":api"))
+	testImplementation(project(":core"))
+	testImplementation(testFixtures(project(":core")))
 
 	// Spring
 	implementation(group = "org.springframework.boot", name = "spring-boot-starter", version = "2.5.0")

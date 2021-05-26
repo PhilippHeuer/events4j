@@ -1,14 +1,14 @@
 // In this section you declare the dependencies for your production and test code
 dependencies {
 	// Project
-	api(project(":events4j-api"))
-	testImplementation(project(":events4j-core"))
-	testImplementation(testFixtures(project(":events4j-core")))
+	api(project(":api"))
+	testImplementation(project(":core"))
+	testImplementation(testFixtures(project(":core")))
 
-	// Reactor
-	api(group = "io.projectreactor", name = "reactor-core")
-	api(group = "io.projectreactor.addons", name = "reactor-extra")
-	testImplementation(group = "io.projectreactor", name = "reactor-test")
+	// Reactor - see https://repo1.maven.org/maven2/io/projectreactor/reactor-bom/Dysprosium-SR12/reactor-bom-Dysprosium-SR12.pom
+	api(group = "io.projectreactor", name = "reactor-core", version = "3.3.10.RELEASE")
+	api(group = "io.projectreactor.addons", name = "reactor-extra", version = "3.3.4.RELEASE")
+	testImplementation(group = "io.projectreactor", name = "reactor-test", version = "3.3.10.RELEASE")
 }
 
 publishing.publications.withType<MavenPublication> {

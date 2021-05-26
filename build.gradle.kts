@@ -54,9 +54,6 @@ subprojects {
         // Logging
         api(group = "org.slf4j", name = "slf4j-api", version = "1.7.30")
 
-        // Reactor
-        implementation(platform("io.projectreactor:reactor-bom:Dysprosium-SR12"))
-
         // Testing
         testImplementation(group = "org.junit.jupiter", name = "junit-jupiter-api", version = "5.7.2")
         testImplementation(group = "org.junit.jupiter", name = "junit-jupiter-engine", version = "5.7.2")

@@ -1,9 +1,9 @@
 // In this section you declare the dependencies for your production and test code
 dependencies {
 	// Project
-	api(project(":events4j-api"))
-	testImplementation(project(":events4j-handler-simple"))
-	testImplementation(project(":events4j-handler-reactor"))
+	api(project(":api"))
+	testImplementation(project(":handler-simple"))
+	testImplementation(project(":handler-reactor"))
 }
 
 publishing.publications.withType<MavenPublication> {
