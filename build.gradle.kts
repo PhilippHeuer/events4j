@@ -56,7 +56,7 @@ subprojects {
 
         // Testing
         testImplementation(group = "org.junit.jupiter", name = "junit-jupiter-api", version = "5.8.1")
-        testImplementation(group = "org.junit.jupiter", name = "junit-jupiter-engine", version = "5.7.2")
+        testImplementation(group = "org.junit.jupiter", name = "junit-jupiter-engine", version = "5.8.1")
     }
 
     publishing {
