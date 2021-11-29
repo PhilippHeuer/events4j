@@ -6,7 +6,7 @@ dependencies {
 	testImplementation(testFixtures(project(":core")))
 
 	// Spring
-	implementation(group = "org.springframework.boot", name = "spring-boot-starter", version = "2.6.0")
+	implementation(group = "org.springframework.boot", name = "spring-boot-starter", version = "2.6.1")
 }
 
 publishing.publications.withType<MavenPublication> {
