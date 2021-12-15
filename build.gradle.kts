@@ -49,7 +49,7 @@ subprojects {
         api(group = "org.slf4j", name = "slf4j-api", version = "1.7.32")
 
         // Testing
-        testImplementation(group = "org.junit.jupiter", name = "junit-jupiter-api", version = "5.8.1")
+        testImplementation(group = "org.junit.jupiter", name = "junit-jupiter-api", version = "5.8.2")
         testImplementation(group = "org.junit.jupiter", name = "junit-jupiter-engine", version = "5.8.1")
     }
 
