@@ -8,7 +8,7 @@ dependencies {
 	// Reactor - see https://repo1.maven.org/maven2/io/projectreactor/reactor-bom/Dysprosium-SR12/reactor-bom-Dysprosium-SR12.pom
 	api(group = "io.projectreactor", name = "reactor-core", version = "3.4.13")
 	api(group = "io.projectreactor.addons", name = "reactor-extra", version = "3.4.6")
-	testImplementation(group = "io.projectreactor", name = "reactor-test", version = "3.4.13")
+	testImplementation(group = "io.projectreactor", name = "reactor-test", version = "3.4.14")
 }
 
 publishing.publications.withType<MavenPublication> {
