@@ -2,6 +2,7 @@ package com.github.philippheuer.events4j.simple;
 
 import com.github.philippheuer.events4j.api.domain.IDisposable;
 import com.github.philippheuer.events4j.core.EventManager;
+import com.github.philippheuer.events4j.core.domain.Event;
 import com.github.philippheuer.events4j.simple.domain.TestEvent;
 import com.github.philippheuer.events4j.simple.domain.TestEventObject;
 import com.github.philippheuer.events4j.simple.listener.TestEventHandler;
@@ -58,7 +59,7 @@ public class SimpleEventHandlerTest {
         eventsHandled = 0;
 
         // Consumer based handler
-        IDisposable disposable = eventManager.onEvent(TestEvent.class, testEvent -> {
+        IDisposable disposable = eventManager.onEvent(Event.class, testEvent -> {
             eventsHandled = eventsHandled + 1;
         });
 

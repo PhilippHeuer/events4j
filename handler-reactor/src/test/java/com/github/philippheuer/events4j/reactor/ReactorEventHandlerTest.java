@@ -3,6 +3,7 @@ package com.github.philippheuer.events4j.reactor;
 import com.github.philippheuer.events4j.api.domain.IDisposable;
 import com.github.philippheuer.events4j.api.service.IEventHandler;
 import com.github.philippheuer.events4j.core.EventManager;
+import com.github.philippheuer.events4j.core.domain.Event;
 import com.github.philippheuer.events4j.reactor.domain.TestEvent;
 import com.github.philippheuer.events4j.reactor.domain.TestEventObject;
 import org.junit.jupiter.api.AfterAll;
@@ -66,7 +67,7 @@ public class ReactorEventHandlerTest {
     @Test
     public void testReactorEventHandlerWithTestEvent() throws Exception {
         // Register Listener
-        IDisposable disposable = eventManager.getEventHandler(REACTOR_EVENTHANDLER).onEvent(TestEvent.class, event -> {
+        IDisposable disposable = eventManager.getEventHandler(REACTOR_EVENTHANDLER).onEvent(Event.class, event -> {
             log.info("Received event [{}] that was fired at {}.", event.getEventId(), event.getFiredAtInstant().toString());
             eventsProcessed = eventsProcessed + 1;
         });
@@ -89,5 +90,4 @@ public class ReactorEventHandlerTest {
         // shutdown
         eventManager.close();
     }
-
 }

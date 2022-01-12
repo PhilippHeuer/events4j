@@ -4,6 +4,9 @@ dependencies {
 	api(project(":api"))
 	testImplementation(project(":core"))
 	testImplementation(testFixtures(project(":core")))
+
+	// class utils
+	implementation("org.apache.commons:commons-lang3:3.12.0")
 }
 
 publishing.publications.withType<MavenPublication> {
