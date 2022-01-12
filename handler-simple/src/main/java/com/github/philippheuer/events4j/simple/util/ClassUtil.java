@@ -1,4 +1,4 @@
-package com.github.philippheuer.events4j.simple;
+package com.github.philippheuer.events4j.simple.util;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -6,7 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-class ClassUtil {
+public class ClassUtil {
 
     private static final BiConsumer<Class<?>, Set<Class<?>>> ADD_INTERFACES = (c, set) -> {
         final Class<?>[] interfaces = c.getInterfaces();
@@ -17,7 +17,13 @@ class ClassUtil {
         }
     };
 
-    static Collection<Class<?>> getInheritanceTree(final Class<?> clazz) {
+    /**
+     * get inheritance tree from a base class
+     *
+     * @param clazz the base class
+     * @return an inheritance tree with all interfaces and superclasses, always includes the base class
+     */
+    public static Collection<Class<?>> getInheritanceTree(final Class<?> clazz) {
         final Set<Class<?>> set = new LinkedHashSet<>();
 
         Class<?> c = clazz;

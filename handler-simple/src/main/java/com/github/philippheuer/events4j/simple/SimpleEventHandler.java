@@ -4,6 +4,7 @@ import com.github.philippheuer.events4j.api.domain.IDisposable;
 import com.github.philippheuer.events4j.api.service.IEventHandler;
 import com.github.philippheuer.events4j.simple.domain.EventSubscriber;
 import com.github.philippheuer.events4j.simple.domain.SimpleEventHandlerSubscription;
+import com.github.philippheuer.events4j.simple.util.ClassUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
