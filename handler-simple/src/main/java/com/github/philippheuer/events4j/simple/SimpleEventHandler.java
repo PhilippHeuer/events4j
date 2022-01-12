@@ -6,13 +6,10 @@ import com.github.philippheuer.events4j.simple.domain.EventSubscriber;
 import com.github.philippheuer.events4j.simple.domain.SimpleEventHandlerSubscription;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ClassUtils;
 
 import java.lang.reflect.Method;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -107,12 +104,7 @@ public class SimpleEventHandler implements IEventHandler {
      * @param event The event that will be dispatched to the simple based method listeners.
      */
     private void handleConsumerHandlers(Object event) {
-        Set<Class> allClasses = new HashSet<>();
-        allClasses.add(event.getClass());
-        allClasses.addAll(ClassUtils.getAllInterfaces(event.getClass()));
-        allClasses.addAll(ClassUtils.getAllSuperclasses(event.getClass()));
-
-        allClasses.forEach(clazz -> {
+        ClassUtil.getInheritanceTree(event.getClass()).forEach(clazz -> {
             final List<Consumer<Object>> eventConsumers = consumerBasedHandlers.get(clazz);
             if (eventConsumers != null)
                 eventConsumers.forEach(consumer -> consumer.accept(event));
