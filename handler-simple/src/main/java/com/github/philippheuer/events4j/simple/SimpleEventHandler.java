@@ -4,6 +4,7 @@ import com.github.philippheuer.events4j.api.domain.IDisposable;
 import com.github.philippheuer.events4j.api.service.IEventHandler;
 import com.github.philippheuer.events4j.simple.domain.EventSubscriber;
 import com.github.philippheuer.events4j.simple.domain.SimpleEventHandlerSubscription;
+import com.github.philippheuer.events4j.simple.util.ClassUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -95,12 +96,27 @@ public class SimpleEventHandler implements IEventHandler {
      * @param event The event that will be dispatched to the simple based method listeners.
      */
     public void publish(Object event) {
-        // consumer based handlers
-        final List<Consumer<Object>> eventConsumers = consumerBasedHandlers.get(event.getClass());
-        if (eventConsumers != null)
-            eventConsumers.forEach(consumer -> consumer.accept(event));
+        handleConsumerHandlers(event);
+        handleAnnotationHandlers(event);
+    }
 
-        // annotation handlers
+    /**
+     * handles the consumer-based handlers
+     * @param event The event that will be dispatched to the simple based method listeners.
+     */
+    private void handleConsumerHandlers(Object event) {
+        ClassUtil.getInheritanceTree(event.getClass()).forEach(clazz -> {
+            final List<Consumer<Object>> eventConsumers = consumerBasedHandlers.get(clazz);
+            if (eventConsumers != null)
+                eventConsumers.forEach(consumer -> consumer.accept(event));
+        });
+    }
+
+    /**
+     * handles the annotation-based handlers
+     * @param event The event that will be dispatched to the simple based method listeners.
+     */
+    private void handleAnnotationHandlers(Object event) {
         if (methodListeners.size() > 0) {
             for (Map.Entry<Class<?>, ConcurrentMap<Method, List<Object>>> e : methodListeners.entrySet()) {
                 if (e.getKey().isAssignableFrom(event.getClass())) {
