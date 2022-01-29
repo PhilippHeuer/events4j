@@ -5,5 +5,6 @@ include(
 	"core",
 	"handler-simple",
 	"handler-reactor",
-	"handler-spring"
+	"handler-spring",
+	"kotlin"
 )

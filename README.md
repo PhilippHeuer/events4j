@@ -124,6 +124,16 @@ public void handleContextStart(TestEvent testEvent) {
 }
 ```
 
+### Kotlin extension functions
+
+Set up Kotlin in your project and include the Events4J-Kotlin dependency.
+```kotlin
+eventManager.flowOn<TestEvent>()
+    .collect { testEvent ->
+        println("TestEvent received")
+    }
+```
+
 ## License
 
 Released under the [MIT License](./LICENSE).
