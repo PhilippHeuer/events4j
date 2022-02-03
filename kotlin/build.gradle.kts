@@ -1,18 +1,14 @@
 // In this section you declare the dependencies for your production and test code
 dependencies {
-    val versionKotlin = "1.6.0"
-
     // Project
-    compileOnly(project(":core"))
+    api(project(":api"))
+    api(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = "1.6.0")
 
-    // Kotlin dependencies
-    api(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = versionKotlin)
-
-    // Tests
+    // Testing
+    testImplementation(group = "org.jetbrains.kotlinx", name="kotlinx-coroutines-test", version = "1.6.0")
     testImplementation(project(":core"))
     testImplementation(project(":handler-simple"))
     testImplementation(testFixtures(project(":core")))
-    testImplementation(group = "org.jetbrains.kotlinx", name="kotlinx-coroutines-test", version = versionKotlin)
 }
 
 tasks.test {
