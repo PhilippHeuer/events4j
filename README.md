@@ -1,57 +1,34 @@
 # *Events4J*
 
+[![Latest](https://img.shields.io/github/release/PhilippHeuer/events4j/all.svg?style=flate&label=latest)](https://search.maven.org/search?q=com.github.philippheuer.events4j)
+
+Click the module name in the table below for specific import instructions. (gradle, maven, ...)
+
+| Module                                                                                                                             | Description                                        | Coordinates                                                      |
+|:-----------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------|------------------------------------------------------------------|
+| [events4j-api](https://search.maven.org/artifact/com.github.philippheuer.events4j/events4j-api/0.10.0/jar)                         | contains all interfaces                            | com.github.philippheuer.events4j:events4j-api:0.10.0             |
+| [events4j-core](https://search.maven.org/artifact/com.github.philippheuer.events4j/events4j-core/0.10.0/jar)                       | contains the EventManager implementation           | com.github.philippheuer.events4j:events4j-core:0.10.0            |
+| [events4j-kotlin](https://search.maven.org/artifact/com.github.philippheuer.events4j/events4j-kotlin/0.10.0/jar)                   | improvements for usage in kotlin projects          | com.github.philippheuer.events4j:events4j-kotlin:0.10.0          |
+| [events4j-handler-simple](https://search.maven.org/artifact/com.github.philippheuer.events4j/events4j-handler-simple/0.10.0/jar)   | a simple synchronous event handler                 | com.github.philippheuer.events4j:events4j-handler-simple:0.10.0  |
+| [events4j-handler-reactor](https://search.maven.org/artifact/com.github.philippheuer.events4j/events4j-handler-reactor/0.10.0/jar) | a event handler using project reactor              | com.github.philippheuer.events4j:events4j-handler-reactor:0.10.0 |
+| [events4j-handler-spring](https://search.maven.org/artifact/com.github.philippheuer.events4j/events4j-handler-spring/0.10.0/jar)   | forward events to spring ApplicationEventPublisher | com.github.philippheuer.events4j:events4j-handler-spring:0.10.0  |
+
 # Description
 
-A simple wrapper to dispatch/consume events.
+**Events4J** provides the following features:
 
-# Import
-
-Maven:
-
-Add the repository to your pom.xml with:
-```xml
-<repositories>
-    <repository>
-      <id>central</id>
-      <url>https://repo1.maven.org/maven2/</url>
-    </repository>
-</repositories>
-```
-and the dependency: (latest, you should use the actual version here)
-
-```xml
-<dependency>
-    <groupId>com.github.philippheuer.events4j</groupId>
-    <artifactId>events4j</artifactId>
-    <version>0.9.8</version>
-    <type>pom</type>
-</dependency>
-```
-
-Gradle:
-
-Add the repository to your build.gradle with:
-```groovy
-repositories {
-    mavenCentral()
-}
-```
-
-and the dependency:
-```groovy
-compile 'com.github.philippheuer.events4j:events4j:0.9.8'
-```
+- publish events
+- register consumers / listeners for events
+- comes with a few prebuilt handlers that you can use out of the box
+- provide your custom implementation to process events however you want
 
 # Usage
 
 ## Initialization
 
 ```java
-// new instance
-EventManager eventManager = new EventManager();
-
-// register modules automatically
-eventManager.autoDiscovery();
+EventManager eventManager = new EventManager(); // new instance
+eventManager.autoDiscovery(); // register modules automatically
 ```
 
 ## Event Producer
@@ -74,9 +51,7 @@ eventManager.registerEventHandler(reactorEventHandler);
 The Consumer
 ```java
 reactorEventHandler.onEvent(TestEvent.class).subscribe(event -> {
-    log.info("Received event [{}] that was fired at {}.",
-        event.getEventId(),
-        event.getFiredAt().toInstant().toString());
+    log.info("TestEvent received");
 });
 ```
 
@@ -96,7 +71,7 @@ public class TestEventListener {
 
     @EventSubscriber
     public void onTestEvent(TestEvent testEvent) {
-        System.out.println("TestEvent Listener Executed.");
+        System.out.println("TestEvent received");
     }
 
 }
@@ -109,7 +84,7 @@ eventManager.registerListener(new TestEventListener());
 
 #### Spring Events
 
-Include the Events4J-Spring Dependency and use spring properties to configure the handler:
+Configure the following in your `application.properties` to enable spring application events:
 
 ```yaml
 events4j.handler.spring.enabled: true
@@ -120,13 +95,14 @@ events4j.handler.spring.enabled: true
 ```java
 @EventListener
 public void handleContextStart(TestEvent testEvent) {
-    System.out.println("Spring Event received.");
+    System.out.println("TestEvent received");
 }
 ```
 
-### Kotlin extension functions
+## Kotlin
 
-Set up Kotlin in your project and include the Events4J-Kotlin dependency.
+The kotlin module allows the usage of [flows](https://kotlinlang.org/docs/flow.html) to consume events.
+
 ```kotlin
 eventManager.flowOn<TestEvent>()
     .collect { testEvent ->
