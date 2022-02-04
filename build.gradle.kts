@@ -2,7 +2,6 @@
 plugins {
     signing
     `java-library`
-    `java-test-fixtures`
     `maven-publish`
     id("io.freefair.lombok") version "6.3.0"
 }
@@ -23,16 +22,17 @@ subprojects {
     apply(plugin = "signing")
     apply(plugin = "java-library")
     apply(plugin = "maven-publish")
-    apply(plugin = "io.freefair.lombok")
-    apply(plugin = "java-test-fixtures")
 
     base {
         archivesBaseName = artifactId
     }
 
-    lombok {
-        version.set("1.18.22")
-        disableConfig.set(true)
+    if (!project.name.contains("kotlin")) {
+        apply(plugin = "io.freefair.lombok")
+        lombok {
+            version.set("1.18.22")
+            disableConfig.set(true)
+        }
     }
 
     // Source Compatibility
@@ -96,10 +96,13 @@ subprojects {
         }
 
         // javadoc & delombok
-        val delombok by getting(io.freefair.gradle.plugins.lombok.tasks.Delombok::class)
         javadoc {
-            dependsOn(delombok)
-            source(delombok)
+            if (!project.name.contains("kotlin")) {
+                val delombok by getting(io.freefair.gradle.plugins.lombok.tasks.Delombok::class)
+                dependsOn(delombok)
+                source(delombok)
+            }
+
             options {
                 title = "${project.artifactId} (v${project.version})"
                 windowTitle = "${project.artifactId} (v${project.version})"
@@ -115,18 +118,4 @@ subprojects {
             }
         }
     }
-}
-
-tasks.register<Javadoc>("aggregateJavadoc") {
-    group = JavaBasePlugin.DOCUMENTATION_GROUP
-    options {
-        title = "${rootProject.name} (v${project.version})"
-        windowTitle = "${rootProject.name} (v${project.version})"
-        encoding = "UTF-8"
-    }
-
-    source(subprojects.map { it.tasks.delombok.get() })
-    classpath = files(subprojects.map { it.sourceSets["main"].compileClasspath })
-
-    setDestinationDir(file("${rootDir}/docs/static/javadoc"))
 }

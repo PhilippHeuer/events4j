@@ -3,13 +3,11 @@ package com.github.philippheuer.events4j.kotlin
 import com.github.philippheuer.events4j.core.EventManager
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.*
-import lombok.extern.slf4j.Slf4j
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 
 
 @ExperimentalCoroutinesApi
-@Slf4j
 class EventManagerExtensionsTest {
 
     @Test

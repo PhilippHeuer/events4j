@@ -1,9 +1,7 @@
-// In this section you declare the dependencies for your production and test code
 dependencies {
 	// Project
 	api(project(":api"))
 	testImplementation(project(":core"))
-	testImplementation(testFixtures(project(":core")))
 }
 
 publishing.publications.withType<MavenPublication> {

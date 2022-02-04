@@ -1,9 +1,7 @@
-// In this section you declare the dependencies for your production and test code
 dependencies {
 	// Project
 	api(project(":api"))
 	testImplementation(project(":core"))
-	testImplementation(testFixtures(project(":core")))
 
 	// Reactor - see https://repo1.maven.org/maven2/io/projectreactor/reactor-bom/Dysprosium-SR12/reactor-bom-Dysprosium-SR12.pom
 	api(group = "io.projectreactor", name = "reactor-core", version = "3.4.14")
