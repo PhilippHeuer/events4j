@@ -3,7 +3,7 @@ plugins {
     signing
     `java-library`
     `maven-publish`
-    id("io.freefair.lombok") version "6.4.0"
+    id("io.freefair.lombok") version "6.4.1"
 }
 
 group = group
