@@ -30,7 +30,7 @@ subprojects {
     if (!project.name.contains("kotlin")) {
         apply(plugin = "io.freefair.lombok")
         lombok {
-            version.set("1.18.22")
+            version.set("1.18.24")
             disableConfig.set(true)
         }
     }
