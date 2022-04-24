@@ -3,7 +3,7 @@ plugins {
     signing
     `java-library`
     `maven-publish`
-    id("io.freefair.lombok") version "6.4.2"
+    id("io.freefair.lombok") version "6.4.3"
 }
 
 group = group
@@ -30,7 +30,7 @@ subprojects {
     if (!project.name.contains("kotlin")) {
         apply(plugin = "io.freefair.lombok")
         lombok {
-            version.set("1.18.22")
+            version.set("1.18.24")
             disableConfig.set(true)
         }
     }
