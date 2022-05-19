@@ -5,7 +5,8 @@
   ],
   "baseBranches": ["develop"],
   "labels": ["dependencies"],
-  "assignees": ["PhilippHeuer", "iProdigy"],
+  "assignees": [],
+  "reviewers": ["PhilippHeuer", "iProdigy"],
   "vulnerabilityAlerts": {
     "labels": ["dependencies", "security"],
     "assignees": ["PhilippHeuer", "iProdigy"]
