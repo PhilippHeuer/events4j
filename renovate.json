@@ -12,6 +12,7 @@
     "assignees": ["PhilippHeuer", "iProdigy"]
   },
   "branchPrefix": "chore/dependencies/",
+  "prHourlyLimit": 0,
   "packageRules": [
     {
       "groupName": "jackson",
