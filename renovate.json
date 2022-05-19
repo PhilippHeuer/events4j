@@ -5,6 +5,12 @@
   ],
   "baseBranches": ["develop"],
   "labels": ["dependencies"],
+  "assignees": ["PhilippHeuer", "iProdigy"],
+  "vulnerabilityAlerts": {
+    "labels": ["dependencies", "security"],
+    "assignees": ["PhilippHeuer", "iProdigy"]
+  },
+  "branchPrefix": "chore/dependencies/",
   "packageRules": [
     {
       "groupName": "jackson",
