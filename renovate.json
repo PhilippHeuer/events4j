@@ -1,5 +1,34 @@
 {
   "extends": [
-    "config:base"
+    "config:base",
+    "github>whitesource/merge-confidence:beta"
+  ],
+  "baseBranches": ["develop"],
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "groupName": "jackson",
+      "matchPackagePrefixes": [
+        "com.fasterxml.jackson"
+      ]
+    },
+    {
+      "groupName": "reactor",
+      "matchPackagePrefixes": [
+        "io.projectreactor"
+      ]
+    },
+    {
+      "groupName": "junit",
+      "matchPackagePrefixes": [
+        "org.junit.jupiter"
+      ]
+    },
+    {
+      "groupName": "resilience4j",
+      "matchPackagePrefixes": [
+        "io.github.resilience4j:"
+      ]
+    }
   ]
 }
