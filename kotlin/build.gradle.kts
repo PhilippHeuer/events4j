@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "1.6.21"
+    id("org.jetbrains.dokka") version "1.6.21"
 }
 
 dependencies {
@@ -17,6 +18,34 @@ tasks.test {
     useJUnitPlatform {
         includeTags("unittest")
         excludeTags("integration")
+    }
+}
+
+tasks.javadoc {
+    enabled = false
+}
+
+tasks.javadocJar {
+    from(tasks.dokkaJavadoc)
+}
+
+tasks.dokkaJavadoc {
+    moduleName.set("Events4J (v${version}) - Kotlin extension functions")
+
+    dokkaSourceSets {
+        configureEach {
+            jdkVersion.set(8)
+
+            sourceLink {
+                localDirectory.set(file("src/main/java"))
+                remoteUrl.set(uri("https://github.com/PhilippHeuer/events4j/tree/master/kotlin/src/main/java").toURL())
+                remoteLineSuffix.set("#L")
+            }
+
+            externalDocumentationLink {
+                url.set(uri("https://github.com/PhilippHeuer/events4j").toURL())
+            }
+        }
     }
 }
 
