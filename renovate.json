@@ -1,42 +1,5 @@
 {
   "extends": [
-    "config:base",
-    "github>whitesource/merge-confidence:beta"
-  ],
-  "baseBranches": ["develop"],
-  "labels": ["dependencies"],
-  "assignees": [],
-  "reviewers": ["PhilippHeuer", "iProdigy"],
-  "vulnerabilityAlerts": {
-    "labels": ["dependencies", "security"],
-    "assignees": ["PhilippHeuer", "iProdigy"]
-  },
-  "branchPrefix": "chore/dependencies/",
-  "prHourlyLimit": 0,
-  "packageRules": [
-    {
-      "groupName": "jackson",
-      "matchPackagePrefixes": [
-        "com.fasterxml.jackson"
-      ]
-    },
-    {
-      "groupName": "reactor",
-      "matchPackagePrefixes": [
-        "io.projectreactor"
-      ]
-    },
-    {
-      "groupName": "junit",
-      "matchPackagePrefixes": [
-        "org.junit.jupiter"
-      ]
-    },
-    {
-      "groupName": "resilience4j",
-      "matchPackagePrefixes": [
-        "io.github.resilience4j:"
-      ]
-    }
+    "github>twitch4j/renovate-config:twitch4j"
   ]
 }
