@@ -6,10 +6,10 @@ plugins {
 dependencies {
     // Project
     api(project(":api"))
-    api(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = "1.6.2")
+    api(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = "1.6.3")
 
     // Testing
-    testImplementation(group = "org.jetbrains.kotlinx", name="kotlinx-coroutines-test", version = "1.6.2")
+    testImplementation(group = "org.jetbrains.kotlinx", name="kotlinx-coroutines-test", version = "1.6.3")
     testImplementation(project(":core"))
     testImplementation(project(":handler-simple"))
 }
