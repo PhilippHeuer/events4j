@@ -65,7 +65,7 @@ public class SimpleEventHandler implements IEventHandler {
      */
     private void registerListener(Class<?> eventListenerClass, Object eventListener) {
         // for each method on the event listener class
-        for (Method method : eventListenerClass.getMethods()) {
+        for (Method method : eventListenerClass.getDeclaredMethods()) {
             // event subscribers need exactly one parameter
             if (method.getParameterCount() == 1) {
                 // event subscriber methods need to be annotated with @EventSubscriber
