@@ -1,0 +1,99 @@
+# name
+name: CI
+
+# triggers
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, develop ]
+    paths-ignore:
+      - "**.md"
+      - ".gitignore"
+      - ".editorconfig"
+
+# jobs
+jobs:
+  # info
+  info:
+    name: Info
+    runs-on: ubuntu-latest
+    steps:
+      - name: prepare environment
+        uses: cidverse/ghact-cid-setup@main
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: build
+        run: |
+          echo "> project modules"
+          cid module ls
+          echo "> workflows"
+          cid workflow ls
+  # build
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: prepare environment
+        uses: cidverse/ghact-cid-setup@main
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: build
+        run: |
+          cid workflow run --stage build
+      - uses: actions/upload-artifact@v3
+        with:
+          name: build-${{ github.ref_name }}
+          path: .dist
+          retention-days: 1
+          if-no-files-found: ignore
+  # test
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: prepare environment
+        uses: cidverse/ghact-cid-setup@main
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: test
+        run: |
+          cid workflow run --stage test
+  # lint
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: prepare environment
+        uses: cidverse/ghact-cid-setup@main
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: lint
+        run: |
+          cid workflow run --stage lint
+  # scan
+  scan:
+    name: Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: prepare environment
+        uses: cidverse/ghact-cid-setup@main
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: scan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
+        run: |
+          cid action run central/sonarqube-scan
