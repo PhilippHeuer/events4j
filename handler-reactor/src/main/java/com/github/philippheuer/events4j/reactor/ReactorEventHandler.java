@@ -26,8 +26,11 @@ public class ReactorEventHandler implements IEventHandler {
 
     /**
      * Used to bridge gateway events to the subscribers
+     *
+     * @deprecated {@link FluxProcessor} is deprecated.
      */
     @Getter
+    @Deprecated
     private final FluxProcessor<Object, Object> processor;
 
     /**
@@ -51,18 +54,16 @@ public class ReactorEventHandler implements IEventHandler {
      * @param scheduler        The scheduler provides some guarantees required by Reactive Streams flows like FIFO execution
      * @param processor        Used to bridge gateway events to the subscribers
      * @param overflowStrategy Safely gates a multi-threaded producer.
+     * @deprecated {@link FluxProcessor} is deprecated.
      */
+    @Deprecated
     public ReactorEventHandler(Scheduler scheduler, FluxProcessor<Object, Object> processor, FluxSink.OverflowStrategy overflowStrategy) {
         this.scheduler = scheduler;
         this.processor = processor;
         this.eventSink = processor.sink(overflowStrategy);
     }
 
-    /**
-     * Dispatches a event
-     *
-     * @param event A event extending the base event class.
-     */
+    @Override
     public void publish(Object event) {
         // publish event
         eventSink.next(event);
@@ -76,10 +77,11 @@ public class ReactorEventHandler implements IEventHandler {
      * @param <E>        the event type
      * @return a new {@link reactor.core.publisher.Flux} of the given eventType
      */
+    @Override
     public <E> IDisposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
         Flux<E> flux = processor
-                .publishOn(this.scheduler)
-                .ofType(eventClass);
+            .publishOn(this.scheduler)
+            .ofType(eventClass);
 
         Subscriber<E> subscription = new Events4JSubscriber<>(consumer);
         flux.subscribe(subscription);
@@ -90,6 +92,7 @@ public class ReactorEventHandler implements IEventHandler {
     /**
      * Shutdown
      */
+    @Override
     public void close() {
         // complete sink
         eventSink.complete();
@@ -97,8 +100,8 @@ public class ReactorEventHandler implements IEventHandler {
         // delayed
         try {
             Thread.sleep(1000);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
         }
 
         // dispose scheduler
