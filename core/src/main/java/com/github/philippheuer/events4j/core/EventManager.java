@@ -188,7 +188,7 @@ public class EventManager implements IEventManager {
      * @return a new Disposable of the given eventType
      */
     public <E> IEventSubscription onEvent(Class<E> eventClass, Consumer<E> consumer) {
-        return onEvent(consumer.getClass().getCanonicalName()+"/"+consumerSequence.getAndAdd(1), eventClass, consumer);
+        return onEvent(consumer.getClass().getCanonicalName() + "/" + consumerSequence.getAndAdd(1), eventClass, consumer);
     }
 
     /**
@@ -200,7 +200,7 @@ public class EventManager implements IEventManager {
      * @param eventClass the event class to obtain events from
      * @param consumer   the event consumer / handler method
      * @param <E>        the event type
-     * @return           a new Disposable of the given eventType
+     * @return a new Disposable of the given eventType
      */
     public synchronized <E> IEventSubscription onEvent(String id, Class<E> eventClass, Consumer<E> consumer) {
         // return null if a disposable with the given id is already present when idUnique is set
@@ -264,7 +264,7 @@ public class EventManager implements IEventManager {
             try {
                 eventHandler.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                log.error("Failed to close event handler!", ex);
             }
         });
     }
