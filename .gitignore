@@ -55,3 +55,7 @@ client.log
 
 # Modules
 /modules/
+
+# ci
+.dist
+.tmp
