@@ -1,3 +1,5 @@
-# release properties
-group=com.github.philippheuer.events4j
+# project
 version=0.0.0
+
+# publish target
+repository.publish.target=mavencentral
