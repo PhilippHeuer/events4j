@@ -102,6 +102,7 @@ public class SimpleEventHandler implements IEventHandler {
 
     /**
      * handles the consumer-based handlers
+     *
      * @param event The event that will be dispatched to the simple based method listeners.
      */
     private void handleConsumerHandlers(Object event) {
@@ -114,6 +115,7 @@ public class SimpleEventHandler implements IEventHandler {
 
     /**
      * handles the annotation-based handlers
+     *
      * @param event The event that will be dispatched to the simple based method listeners.
      */
     private void handleAnnotationHandlers(Object event) {
@@ -129,8 +131,7 @@ public class SimpleEventHandler implements IEventHandler {
                             } catch (IllegalAccessException ex) {
                                 log.error("Error dispatching event {}.", event.getClass().getSimpleName());
                             } catch (Exception ex) {
-                                ex.printStackTrace();
-                                log.error("Unhandled exception caught dispatching event {}.", event.getClass().getSimpleName());
+                                log.error("Unhandled exception caught dispatching event " + event.getClass().getSimpleName(), ex);
                             }
                         });
                     });
