@@ -1,3 +1,9 @@
+projectConfiguration {
+	artifactId.set("events4j-handler-reactor")
+	artifactDisplayName.set("Events4J Handler - Reactor")
+	artifactDescription.set("Events4J Handler - Reactor")
+}
+
 dependencies {
 	// Project
 	api(project(":api"))
@@ -7,12 +13,4 @@ dependencies {
 	api(group = "io.projectreactor", name = "reactor-core", version = "3.4.21")
 	api(group = "io.projectreactor.addons", name = "reactor-extra", version = "3.4.8")
 	testImplementation(group = "io.projectreactor", name = "reactor-test", version = "3.4.21")
-}
-
-publishing.publications.withType<MavenPublication> {
-	artifactId = "events4j-handler-reactor"
-	pom {
-		name.set("Events4J Handler - Reactor")
-		description.set("Events4J Handler - Reactor")
-	}
 }

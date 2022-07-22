@@ -1,121 +1,65 @@
 // Plugins
 plugins {
-    signing
-    `java-library`
-    `maven-publish`
-    id("io.freefair.lombok") version "6.5.0.3"
+    id("me.philippheuer.configuration") version "0.4.4"
 }
 
-group = group
-version = version
+version = properties["version"] as String
 
 // All-Projects
 allprojects {
+    apply(plugin = "me.philippheuer.configuration")
+
     // Repositories
     repositories {
         mavenCentral()
+    }
+
+    projectConfiguration {
+        language.set(me.philippheuer.projectcfg.domain.ProjectLanguage.JAVA)
+        type.set(me.philippheuer.projectcfg.domain.ProjectType.LIBRARY)
+        javaVersion.set(JavaVersion.VERSION_1_8)
+        lombokVersion.set("1.18.24")
+        artifactGroupId.set("com.github.philippheuer.events4j")
+
+        pom = { pom ->
+            pom.url.set("https://github.com/PhilippHeuer/events4j")
+            pom.issueManagement {
+                system.set("GitHub")
+                url.set("https://github.com/PhilippHeuer/events4j/issues")
+            }
+            pom.inceptionYear.set("2018")
+            pom.developers {
+                developer {
+                    id.set("PhilippHeuer")
+                    name.set("Philipp Heuer")
+                    email.set("git@philippheuer.me")
+                    roles.addAll("maintainer")
+                }
+                developer {
+                    id.set("iProdigy")
+                    name.set("Sidd")
+                    roles.addAll("maintainer")
+                }
+            }
+            pom.licenses {
+                license {
+                    name.set("MIT Licence")
+                    distribution.set("repo")
+                    url.set("https://github.com/PhilippHeuer/events4j/blob/main/LICENSE")
+                }
+            }
+            pom.scm {
+                connection.set("scm:git:https://github.com/PhilippHeuer/events4j.git")
+                developerConnection.set("scm:git:git@github.com:PhilippHeuer/events4j.git")
+                url.set("https://github.com/PhilippHeuer/events4j")
+            }
+        }
     }
 }
 
 // Subprojects
 subprojects {
-    apply(plugin = "signing")
-    apply(plugin = "java-library")
-    apply(plugin = "maven-publish")
-
-    base {
-        archivesBaseName = artifactId
-    }
-
-    if (!project.name.contains("kotlin")) {
-        apply(plugin = "io.freefair.lombok")
-        lombok {
-            version.set("1.18.24")
-            disableConfig.set(true)
-        }
-    }
-
-    // Source Compatibility
-    java {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-        withSourcesJar()
-        withJavadocJar()
-    }
-
-    // Dependencies
-    dependencies {
-        // Logging
-        api(group = "org.slf4j", name = "slf4j-api", version = "1.7.36")
-
-        // Testing
-        testImplementation(group = "org.junit.jupiter", name = "junit-jupiter-api", version = "5.8.2")
-        testImplementation(group = "org.junit.jupiter", name = "junit-jupiter-engine", version = "5.8.2")
-    }
-
-    publishing {
-        repositories {
-            maven {
-                name = "maven"
-                url = uri(project.mavenRepositoryUrl)
-                credentials {
-                    username = project.mavenRepositoryUsername
-                    password = project.mavenRepositoryPassword
-                }
-            }
-        }
-        publications {
-            create<MavenPublication>("main") {
-                from(components["java"])
-                artifactId = project.artifactId
-                pom.default()
-            }
-        }
-    }
-
-    signing {
-        useGpgCmd()
-        sign(publishing.publications["main"])
-    }
-
-    // Source encoding
-    tasks {
-        // javadoc / html5 support
-        withType<Javadoc> {
-            // hide javadoc warnings (a lot from delombok)
-            (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
-
-            if (JavaVersion.current().isJava9Compatible) {
-                (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
-            }
-        }
-
-        // compile options
-        withType<JavaCompile> {
-            options.encoding = "UTF-8"
-        }
-
-        // javadoc & delombok
-        javadoc {
-            if (!project.name.contains("kotlin")) {
-                val delombok by getting(io.freefair.gradle.plugins.lombok.tasks.Delombok::class)
-                dependsOn(delombok)
-                source(delombok)
-            }
-
-            options {
-                title = "${project.artifactId} (v${project.version})"
-                windowTitle = "${project.artifactId} (v${project.version})"
-                encoding = "UTF-8"
-            }
-        }
-
-        // test
-        test {
-            useJUnitPlatform {
-                includeTags("unittest")
-                excludeTags("integration")
-            }
-        }
+    if (!name.contains("bom")) {
+        apply(plugin = "java-library")
     }
 }

@@ -1,6 +1,12 @@
 plugins {
-    kotlin("jvm") version "1.7.10"
-    id("org.jetbrains.dokka") version "1.7.10"
+    kotlin("jvm")
+}
+
+projectConfiguration {
+    language.set(me.philippheuer.projectcfg.domain.ProjectLanguage.KOTLIN)
+    artifactId.set("events4j-kotlin")
+    artifactDisplayName.set("Events4J - Kotlin")
+    artifactDescription.set("Events4J - Kotlin extension functions")
 }
 
 dependencies {
@@ -12,47 +18,4 @@ dependencies {
     testImplementation(group = "org.jetbrains.kotlinx", name="kotlinx-coroutines-test", version = "1.6.4")
     testImplementation(project(":core"))
     testImplementation(project(":handler-simple"))
-}
-
-tasks.test {
-    useJUnitPlatform {
-        includeTags("unittest")
-        excludeTags("integration")
-    }
-}
-
-tasks.javadoc {
-    enabled = false
-}
-
-tasks.javadocJar {
-    from(tasks.dokkaJavadoc)
-}
-
-tasks.dokkaJavadoc {
-    moduleName.set("Events4J (v${version}) - Kotlin extension functions")
-
-    dokkaSourceSets {
-        configureEach {
-            jdkVersion.set(8)
-
-            sourceLink {
-                localDirectory.set(file("src/main/java"))
-                remoteUrl.set(uri("https://github.com/PhilippHeuer/events4j/tree/master/kotlin/src/main/java").toURL())
-                remoteLineSuffix.set("#L")
-            }
-
-            externalDocumentationLink {
-                url.set(uri("https://github.com/PhilippHeuer/events4j").toURL())
-            }
-        }
-    }
-}
-
-publishing.publications.withType<MavenPublication> {
-    artifactId = "events4j-kotlin"
-    pom {
-        name.set("Events4J - Kotlin")
-        description.set("Events4J - Kotlin extension functions")
-    }
 }

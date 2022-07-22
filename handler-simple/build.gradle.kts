@@ -1,13 +1,11 @@
+projectConfiguration {
+	artifactId.set("events4j-handler-simple")
+	artifactDisplayName.set("Events4J Handler - Simple")
+	artifactDescription.set("Events4J Handler - Simple")
+}
+
 dependencies {
 	// Project
 	api(project(":api"))
 	testImplementation(project(":core"))
-}
-
-publishing.publications.withType<MavenPublication> {
-	artifactId = "events4j-handler-simple"
-	pom {
-		name.set("Events4J Handler - Simple")
-		description.set("Events4J Handler - Simple")
-	}
 }

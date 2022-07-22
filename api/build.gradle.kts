@@ -1,11 +1,9 @@
-dependencies {
-
+projectConfiguration {
+    artifactId.set("events4j-api")
+    artifactDisplayName.set("Events4J API")
+    artifactDescription.set("Events4J API")
 }
 
-publishing.publications.withType<MavenPublication> {
-	artifactId = "events4j-api"
-	pom {
-		name.set("Events4J API Module")
-		description.set("API Module")
-	}
+dependencies {
+
 }
