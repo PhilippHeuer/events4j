@@ -52,7 +52,7 @@ jobs:
       - name: upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: build-${{ github.ref_name }}
+          name: build-${{ github.run_id }}
           path: .dist
           retention-days: 1
           if-no-files-found: ignore
@@ -73,7 +73,7 @@ jobs:
       - name: upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: test-${{ github.ref_name }}
+          name: test-${{ github.run_id }}
           path: .dist
           retention-days: 1
           if-no-files-found: ignore
@@ -106,13 +106,13 @@ jobs:
       - name: download artifacts > build
         uses: actions/download-artifact@v3
         with:
-          name: build-${{ github.ref_name }}
+          name: build-${{ github.run_id }}
           path: .dist
         continue-on-error: true
       - name: download artifacts > test
         uses: actions/download-artifact@v3
         with:
-          name: test-${{ github.ref_name }}
+          name: test-${{ github.run_id }}
           path: .dist
         continue-on-error: true
       - name: scan
@@ -122,4 +122,4 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
         run: |
-          cid action run central/sonarqube-scan
+          cid workflow run --stage scan
