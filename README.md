@@ -4,7 +4,7 @@
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=133151090&metric=bugs)](https://sonarcloud.io/summary/overall?id=133151090)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=133151090&metric=code_smells)](https://sonarcloud.io/summary/overall?id=133151090)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=133151090&metric=duplicated_lines_density)](https://sonarcloud.io/summary/overall?id=133151090)
-[![SonarCloud Coverage](https://sonarcloud.io/api/project_badges/measure?project=133151090&metric=coverage)](https://sonarcloud.io/component_measures/metric/coverage/list?id=133151090)
+[![SonarCloud Coverage](https://sonarcloud.io/api/project_badges/measure?project=133151090&metric=coverage)](https://sonarcloud.io/component_measures?metric=Coverage&view=list&id=133151090)
 
 Click the module name in the table below for specific import instructions. (gradle, maven, ...)
 
