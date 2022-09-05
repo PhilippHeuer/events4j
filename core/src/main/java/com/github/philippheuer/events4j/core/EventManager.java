@@ -105,7 +105,7 @@ public class EventManager implements IEventManager {
 
             log.info("Auto Discovery: SimpleEventHandler registered!");
             registerEventHandler(handlerClass.getDeclaredConstructor(new Class[0]).newInstance());
-        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException ex) {
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException | IllegalStateException ex) {
             log.debug("Auto Discovery: SimpleEventHandler not available!");
         }
 
@@ -116,7 +116,7 @@ public class EventManager implements IEventManager {
 
             log.info("Auto Discovery: ReactorEventHandler registered!");
             registerEventHandler(handlerClass.getDeclaredConstructor(new Class[0]).newInstance());
-        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException ex) {
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException | IllegalStateException ex) {
             log.debug("Auto Discovery: ReactorEventHandler not available!");
         }
     }
