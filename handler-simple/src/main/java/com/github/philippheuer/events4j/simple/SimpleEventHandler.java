@@ -67,14 +67,15 @@ public class SimpleEventHandler implements IEventHandler {
         // for each method on the event listener class
         for (Method method : eventListenerClass.getDeclaredMethods()) {
             // event subscribers need exactly one parameter
-            if (method.getParameterCount() == 1) {
+            Class<?>[] parameters = method.getParameterTypes();
+            if (parameters.length == 1) {
                 // event subscriber methods need to be annotated with @EventSubscriber
                 if (method.isAnnotationPresent(EventSubscriber.class)) {
                     // ignore access checks so that we can call private methods
                     method.setAccessible(true);
 
                     // get event class the listener expects
-                    Class<?> eventClass = method.getParameterTypes()[0];
+                    Class<?> eventClass = parameters[0];
 
                     // check if the event class extends the base event class
                     if (Object.class.isAssignableFrom(eventClass)) {
