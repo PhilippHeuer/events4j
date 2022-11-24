@@ -10,5 +10,5 @@ dependencies {
 	testImplementation(project(":core"))
 
 	// Spring
-	implementation(group = "org.springframework.boot", name = "spring-boot-starter", version = "2.7.5")
+	implementation(group = "org.springframework.boot", name = "spring-boot-starter", version = "2.7.6")
 }
