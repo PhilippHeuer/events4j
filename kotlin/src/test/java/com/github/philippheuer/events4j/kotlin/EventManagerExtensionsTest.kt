@@ -1,11 +1,12 @@
 package com.github.philippheuer.events4j.kotlin
 
 import com.github.philippheuer.events4j.core.EventManager
-import kotlinx.coroutines.*
-import kotlinx.coroutines.test.*
-import org.junit.jupiter.api.*
-import org.junit.jupiter.api.Assertions.*
-
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runCurrent
+import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
 @ExperimentalCoroutinesApi
 class EventManagerExtensionsTest {
