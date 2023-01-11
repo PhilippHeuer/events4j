@@ -1,4 +1,4 @@
-package com.github.philippheuer.events4j.reactor.domain;
+package com.github.philippheuer.events4j.spring.domain;
 
 import com.github.philippheuer.events4j.core.domain.Event;
 

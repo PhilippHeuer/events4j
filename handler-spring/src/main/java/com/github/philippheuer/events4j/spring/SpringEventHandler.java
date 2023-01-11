@@ -2,9 +2,15 @@ package com.github.philippheuer.events4j.spring;
 
 import com.github.philippheuer.events4j.api.domain.IDisposable;
 import com.github.philippheuer.events4j.api.service.IEventHandler;
+import com.github.philippheuer.events4j.spring.domain.SpringListenerSubscription;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.PayloadApplicationEvent;
+import org.springframework.context.event.ApplicationEventMulticaster;
+import org.springframework.lang.NonNullApi;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Consumer;
@@ -16,27 +22,37 @@ import java.util.function.Consumer;
 @Slf4j
 public class SpringEventHandler implements IEventHandler {
 
-    @Autowired
-    private ApplicationEventPublisher applicationEventPublisher;
+    private final ApplicationEventMulticaster applicationEventMulticaster;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    /**
-     * Dispatches a event
-     *
-     * @param event A event extending the base event class.
-     */
+    @Autowired
+    public SpringEventHandler(ApplicationEventMulticaster applicationEventMulticaster, ApplicationEventPublisher applicationEventPublisher) {
+        this.applicationEventMulticaster = applicationEventMulticaster;
+        this.applicationEventPublisher = applicationEventPublisher;
+    }
+
     public void publish(Object event) {
-        // publish event
         applicationEventPublisher.publishEvent(event);
     }
 
     @Override
     public <E> IDisposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
-        throw new RuntimeException("SpringEventHandler does not support onEvent, please consumer events as spring application events!");
+        ApplicationListener<ApplicationEvent> listener = event -> {
+            if (event instanceof PayloadApplicationEvent) {
+                PayloadApplicationEvent pae = (PayloadApplicationEvent) event;
+
+                if (eventClass.isInstance(pae.getPayload())) {
+                    consumer.accept((E) pae.getPayload());
+                }
+            }
+        };
+
+        applicationEventMulticaster.addApplicationListener(listener);
+
+        // Return an IDisposable that removes the listener when called
+        return SpringListenerSubscription.of(applicationEventMulticaster, listener);
     }
 
-    /**
-     * Shutdown
-     */
     public void close() {
         // nothing
     }

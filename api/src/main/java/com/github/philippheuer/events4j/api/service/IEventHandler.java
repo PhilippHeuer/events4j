@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 public interface IEventHandler extends AutoCloseable {
 
     /**
-     * Publish a Event
+     * Publishes an Event
      *
      * @param event Event
      */

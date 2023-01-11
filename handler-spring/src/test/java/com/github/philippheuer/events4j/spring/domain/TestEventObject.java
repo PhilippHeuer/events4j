@@ -1,4 +1,4 @@
-package com.github.philippheuer.events4j.simple.domain;
+package com.github.philippheuer.events4j.spring.domain;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
