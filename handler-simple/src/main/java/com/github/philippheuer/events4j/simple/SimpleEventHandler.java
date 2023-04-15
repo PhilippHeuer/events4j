@@ -84,7 +84,7 @@ public class SimpleEventHandler implements IEventHandler {
                             .add(eventListener); // add event listener to method
 
                         // log
-                        log.info("Registered method listener {}#{}", eventListenerClass.getSimpleName(), method.getName());
+                        log.debug("Registered method listener {}#{}", eventListenerClass.getSimpleName(), method.getName());
                     }
                 }
             }
