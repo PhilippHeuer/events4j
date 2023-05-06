@@ -1,5 +1,9 @@
 {
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "github>twitch4j/renovate-config:twitch4j"
-  ]
+    "github>cidverse/renovate-config:default"
+  ],
+  "baseBranches": ["main"],
+  "assignees": [],
+  "reviewers": ["PhilippHeuer", "iProdigy"]
 }
