@@ -6,12 +6,26 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - 'main'
+      - main
     tags:
-      - 'v*.*.*'
+      - v*.*.*
     paths-ignore:
-      - ".gitignore"
-      - ".editorconfig"
+      - README.md
+      - LICENSE
+      - .github/**
+      - .gitignore
+      - .editorconfig
+      - renovate.json
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - README.md
+      - LICENSE
+      - .github/**
+      - .gitignore
+      - .editorconfig
+      - renovate.json
 
 jobs:
   check:
