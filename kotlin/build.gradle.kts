@@ -12,10 +12,10 @@ projectConfiguration {
 dependencies {
     // Project
     api(project(":api"))
-    api(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = "1.7.0")
+    api(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = "1.7.1")
 
     // Testing
-    testImplementation(group = "org.jetbrains.kotlinx", name="kotlinx-coroutines-test", version = "1.7.0")
+    testImplementation(group = "org.jetbrains.kotlinx", name="kotlinx-coroutines-test", version = "1.7.1")
     testImplementation(project(":core"))
     testImplementation(project(":handler-simple"))
 }
