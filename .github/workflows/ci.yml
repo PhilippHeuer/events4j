@@ -30,6 +30,12 @@ on:
 jobs:
   check:
     uses: cidverse/catalog/.github/workflows/shared-ci.yml@main
+    permissions:
+      contents: write # create release
+      packages: write # publish packages
+      security-events: write # sarif reports
+      pages: write # pages
+      id-token: write # signing
     with:
       cid-workflow: main
       cid-version: latest
