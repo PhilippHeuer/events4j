@@ -10,6 +10,6 @@ dependencies {
 	testImplementation(project(":core"))
 
 	// Spring
-	api("org.springframework.boot:spring-boot-starter:2.7.12")
-	testImplementation("org.springframework.boot:spring-boot-starter-test:2.7.12")
+	api("org.springframework.boot:spring-boot-starter:2.7.13")
+	testImplementation("org.springframework.boot:spring-boot-starter-test:2.7.13")
 }
