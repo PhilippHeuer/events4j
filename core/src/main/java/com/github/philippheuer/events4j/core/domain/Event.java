@@ -40,8 +40,18 @@ public abstract class Event implements IEvent {
      * Constructor
      */
     public Event() {
-        eventId = UUID.randomUUID().toString();
-        firedAtInstant = Instant.now();
+        this(UUID.randomUUID().toString(), Instant.now());
+    }
+
+    /**
+     * Constructor
+     *
+     * @param eventId Unique event id
+     * @param firedAt Timestamp of the event firing
+     */
+    public Event(String eventId, Instant firedAt) {
+        this.eventId = eventId;
+        this.firedAtInstant = firedAt;
     }
 
     @Override
