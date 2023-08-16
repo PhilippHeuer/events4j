@@ -28,9 +28,10 @@ on:
       - renovate.json
 
 jobs:
-  check:
+  ci:
     uses: cidverse/catalog/.github/workflows/shared-ci.yml@main
     permissions:
+      actions: read # read actions
       contents: write # create release
       packages: write # publish packages
       security-events: write # sarif reports
