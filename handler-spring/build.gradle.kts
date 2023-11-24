@@ -11,5 +11,5 @@ dependencies {
 
 	// Spring
 	api("org.springframework.boot:spring-boot-starter:2.7.18")
-	testImplementation("org.springframework.boot:spring-boot-starter-test:2.7.17")
+	testImplementation("org.springframework.boot:spring-boot-starter-test:2.7.18")
 }
