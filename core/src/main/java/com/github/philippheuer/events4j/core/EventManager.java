@@ -45,7 +45,7 @@ public class EventManager implements IEventManager {
     /**
      * is Stopped?
      */
-    private volatile boolean isStopped = false;
+    private volatile boolean isStopped;
 
     /**
      * Default EventHandler

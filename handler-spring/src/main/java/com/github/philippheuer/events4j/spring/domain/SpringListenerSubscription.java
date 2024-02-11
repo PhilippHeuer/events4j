@@ -10,7 +10,7 @@ import org.springframework.context.event.ApplicationEventMulticaster;
 public class SpringListenerSubscription implements IDisposable {
 
     @Getter
-    private boolean isDisposed = false;
+    private boolean isDisposed;
 
     @Getter(AccessLevel.NONE)
     private final ApplicationEventMulticaster applicationEventMulticaster;
