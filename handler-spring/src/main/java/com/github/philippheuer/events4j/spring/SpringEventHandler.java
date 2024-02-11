@@ -10,7 +10,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.PayloadApplicationEvent;
 import org.springframework.context.event.ApplicationEventMulticaster;
-import org.springframework.lang.NonNullApi;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Consumer;

@@ -11,9 +11,9 @@ public class Events4JSubscriber<E> implements Subscriber<E>, Disposable, IDispos
 
     private Subscription subscription;
 
-    private Consumer<E> consumer;
+    private final Consumer<E> consumer;
 
-    private boolean isDisposed = false;
+    private boolean isDisposed;
 
     public Events4JSubscriber(Consumer<E> consumer) {
         this.consumer = consumer;
@@ -43,7 +43,7 @@ public class Events4JSubscriber<E> implements Subscriber<E>, Disposable, IDispos
 
     @Override
     public void dispose() {
-        if (isDisposed == false) {
+        if (!isDisposed) {
             subscription.cancel();
             isDisposed = true;
             subscription = null;

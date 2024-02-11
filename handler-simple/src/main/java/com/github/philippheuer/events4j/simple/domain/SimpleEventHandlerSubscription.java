@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 public class SimpleEventHandlerSubscription implements IDisposable {
 
     @Getter
-    private boolean isDisposed = false;
+    private boolean isDisposed;
 
     @Getter(AccessLevel.NONE)
     private final SimpleEventHandler simpleEventHandler;

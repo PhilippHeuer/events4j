@@ -124,7 +124,7 @@ public class SimpleEventHandler implements IEventHandler {
             for (Map.Entry<Class<?>, ConcurrentMap<Method, List<Object>>> e : methodListeners.entrySet()) {
                 if (e.getKey().isAssignableFrom(event.getClass())) {
                     ConcurrentMap<Method, List<Object>> eventClass = e.getValue();
-                    eventClass.forEach((k, v) -> {
+                    eventClass.forEach((k, v) ->
                         v.forEach(object -> {
                             try {
                                 // Invoke Event
@@ -134,8 +134,7 @@ public class SimpleEventHandler implements IEventHandler {
                             } catch (Exception ex) {
                                 log.error("Unhandled exception caught dispatching event " + event.getClass().getSimpleName(), ex);
                             }
-                        });
-                    });
+                        }));
                 }
             }
         }
