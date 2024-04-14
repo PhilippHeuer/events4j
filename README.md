@@ -1,6 +1,8 @@
 # *Events4J*
 
 [![Latest](https://img.shields.io/github/release/PhilippHeuer/events4j/all.svg?style=flate&label=latest)](https://search.maven.org/search?q=com.github.philippheuer.events4j)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/philippheuer/events4j/badge)](https://securityscorecards.dev/viewer/?uri=github.com/philippheuer/events4j)
+
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=github-com-133151090&metric=bugs)](https://sonarcloud.io/summary/overall?id=github-com-133151090)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=github-com-133151090&metric=code_smells)](https://sonarcloud.io/summary/overall?id=github-com-133151090)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=github-com-133151090&metric=duplicated_lines_density)](https://sonarcloud.io/summary/overall?id=github-com-133151090)
