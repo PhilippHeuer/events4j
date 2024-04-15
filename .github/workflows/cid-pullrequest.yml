@@ -104,7 +104,7 @@ jobs:
           egress-policy: ${{ env.EGRESS_POLICY }}
           allowed-endpoints: ${{ env.EGRESS_POLICY_ALLOWED_ENDPOINTS }}
       - name: prepare environment
-        uses: cidverse/ghact-cid-setup@main
+        uses: cidverse/ghact-cid-setup@31e7177a4d98b05a05b4671f70df0ed199bfb9a1 # v0.1.0
         with:
           version: ${{ env.CID_VERSION }}
       - name: checkout
@@ -136,7 +136,7 @@ jobs:
           egress-policy: ${{ env.EGRESS_POLICY }}
           allowed-endpoints: ${{ env.EGRESS_POLICY_ALLOWED_ENDPOINTS }} ${{ env.EGRESS_POLICY_ALLOWED_ENDPOINTS_BUILD }}
       - name: prepare environment
-        uses: cidverse/ghact-cid-setup@main
+        uses: cidverse/ghact-cid-setup@31e7177a4d98b05a05b4671f70df0ed199bfb9a1 # v0.1.0
         with:
           version: ${{ env.CID_VERSION }}
       - name: checkout
@@ -170,7 +170,7 @@ jobs:
           egress-policy: ${{ env.EGRESS_POLICY }}
           allowed-endpoints: ${{ env.EGRESS_POLICY_ALLOWED_ENDPOINTS }} ${{ env.EGRESS_POLICY_ALLOWED_ENDPOINTS_TEST }}
       - name: prepare environment
-        uses: cidverse/ghact-cid-setup@main
+        uses: cidverse/ghact-cid-setup@31e7177a4d98b05a05b4671f70df0ed199bfb9a1 # v0.1.0
         with:
           version: ${{ env.CID_VERSION }}
       - name: checkout
@@ -206,7 +206,7 @@ jobs:
           egress-policy: ${{ env.EGRESS_POLICY }}
           allowed-endpoints: ${{ env.EGRESS_POLICY_ALLOWED_ENDPOINTS }} ${{ env.EGRESS_POLICY_ALLOWED_ENDPOINTS_SCAN }}
       - name: prepare environment
-        uses: cidverse/ghact-cid-setup@main
+        uses: cidverse/ghact-cid-setup@31e7177a4d98b05a05b4671f70df0ed199bfb9a1 # v0.1.0
         with:
           version: ${{ env.CID_VERSION }}
       - name: checkout
