@@ -81,9 +81,10 @@ env:
   EGRESS_POLICY_ALLOWED_ENDPOINTS_BUILD: ""
   EGRESS_POLICY_ALLOWED_ENDPOINTS_TEST: ""
   EGRESS_POLICY_ALLOWED_ENDPOINTS_SCAN: >-
-    scanner.sonarcloud.io:443
     semgrep.dev:443
     sonarcloud.io:443
+    api.sonarcloud.io:443
+    scanner.sonarcloud.io:443
   EGRESS_POLICY_ALLOWED_ENDPOINTS_PACKAGE: ""
   EGRESS_POLICY_ALLOWED_ENDPOINTS_PUBLISH: >-
     maven.pkg.github.com
