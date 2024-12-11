@@ -12,5 +12,5 @@ dependencies {
 	// Reactor - see https://repo1.maven.org/maven2/io/projectreactor/reactor-bom/Dysprosium-SR12/reactor-bom-Dysprosium-SR12.pom
 	api("io.projectreactor:reactor-core:3.7.0")
 	api("io.projectreactor.addons:reactor-extra:3.5.2")
-	testImplementation("io.projectreactor:reactor-test:3.7.0")
+	testImplementation("io.projectreactor:reactor-test:3.7.1")
 }
