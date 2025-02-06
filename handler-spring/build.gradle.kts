@@ -1,3 +1,7 @@
+plugins {
+	`java-library`
+}
+
 projectConfiguration {
 	artifactId.set("events4j-handler-spring")
 	artifactDisplayName.set("Events4J Handler - Spring")
