@@ -5,6 +5,7 @@ import com.github.philippheuer.events4j.api.service.IEventHandler;
 import com.github.philippheuer.events4j.reactor.util.Events4JSubscriber;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.reactivestreams.Subscriber;
 import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.Flux;
@@ -53,7 +54,7 @@ public class ReactorEventHandler implements IEventHandler {
      *
      * @param scheduler        The scheduler provides some guarantees required by Reactive Streams flows like FIFO execution
      * @param processor        Used to bridge gateway events to the subscribers
-     * @param overflowStrategy Safely gates a multi-threaded producer.
+     * @param overflowStrategy Safely gates a multithreaded producer.
      * @deprecated {@link FluxProcessor} is deprecated.
      */
     @Deprecated
@@ -64,7 +65,7 @@ public class ReactorEventHandler implements IEventHandler {
     }
 
     @Override
-    public void publish(Object event) {
+    public void publish(@NonNull Object event) {
         // publish event
         eventSink.next(event);
     }
@@ -77,8 +78,9 @@ public class ReactorEventHandler implements IEventHandler {
      * @param <E>        the event type
      * @return a new {@link reactor.core.publisher.Flux} of the given eventType
      */
+    @NonNull
     @Override
-    public <E> IDisposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
+    public <E> IDisposable onEvent(@NonNull Class<E> eventClass, @NonNull Consumer<E> consumer) {
         Flux<E> flux = processor
             .publishOn(this.scheduler)
             .ofType(eventClass);

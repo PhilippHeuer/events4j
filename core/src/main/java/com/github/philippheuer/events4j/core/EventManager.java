@@ -10,6 +10,8 @@ import com.github.philippheuer.events4j.api.service.IServiceMediator;
 import com.github.philippheuer.events4j.core.services.ServiceMediator;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -23,10 +25,6 @@ import java.util.function.Consumer;
 
 /**
  * The EventManager
- *
- * @author Philipp Heuer [https://github.com/PhilippHeuer]
- * @version %I%, %G%
- * @since 1.0
  */
 @Getter
 @Slf4j
@@ -79,7 +77,7 @@ public class EventManager implements IEventManager {
      *
      * @param eventHandler IEventHandler
      */
-    public void registerEventHandler(IEventHandler eventHandler) {
+    public void registerEventHandler(@NonNull IEventHandler eventHandler) {
         if (!eventHandlers.contains(eventHandler)) {
             eventHandlers.add(eventHandler);
             eventHandlerCache.put(eventHandler.getClass().getCanonicalName(), eventHandler.getClass());
@@ -89,6 +87,7 @@ public class EventManager implements IEventManager {
     /**
      * @return returns the list of all active subscriptions
      */
+    @NonNull
     public List<IEventSubscription> getActiveSubscriptions() {
         return Collections.unmodifiableList(new ArrayList<>(activeSubscriptions.values()));
     }
@@ -126,7 +125,7 @@ public class EventManager implements IEventManager {
      *
      * @param event A event of any kinds, should implement IEvent if possible
      */
-    public void publish(Object event) {
+    public void publish(@NonNull Object event) {
         // check for stop
         if (isStopped) {
             log.warn("Tried to dispatch a event to a closed eventManager!");
@@ -163,7 +162,7 @@ public class EventManager implements IEventManager {
      * @param eventHandlerClass the event handler class
      * @return boolean
      */
-    public boolean hasEventHandler(Class<? extends IEventHandler> eventHandlerClass) {
+    public boolean hasEventHandler(@NonNull Class<? extends IEventHandler> eventHandlerClass) {
         return getEventHandlers().stream().anyMatch(h -> h.getClass().getName().equalsIgnoreCase(eventHandlerClass.getName()));
     }
 
@@ -174,7 +173,7 @@ public class EventManager implements IEventManager {
      * @param <E>               the eventHandler type
      * @return a reference to the requested event handler
      */
-    public <E extends IEventHandler> E getEventHandler(Class<E> eventHandlerClass) {
+    public <E extends IEventHandler> E getEventHandler(@NonNull Class<E> eventHandlerClass) {
         Optional<E> eventHandler = getEventHandlers().stream().filter(h -> h.getClass().getName().equalsIgnoreCase(eventHandlerClass.getName())).map(h -> (E) h).findAny();
         return eventHandler.orElseThrow(() -> new RuntimeException("No eventHandler of type " + eventHandlerClass.getName() + " is registered!"));
     }
@@ -187,8 +186,14 @@ public class EventManager implements IEventManager {
      * @param <E>        the event type
      * @return a new Disposable of the given eventType
      */
-    public <E> IEventSubscription onEvent(Class<E> eventClass, Consumer<E> consumer) {
-        return onEvent(consumer.getClass().getCanonicalName() + "/" + consumerSequence.getAndAdd(1), eventClass, consumer);
+    @NonNull
+    public <E> IEventSubscription onEvent(@NonNull Class<E> eventClass, @NonNull Consumer<E> consumer) {
+        IEventSubscription sub;
+        do {
+             sub = onEvent(consumer.getClass().getCanonicalName() + "/" + consumerSequence.getAndAdd(1), eventClass, consumer);
+        } while (sub == null);
+
+        return sub;
     }
 
     /**
@@ -202,7 +207,8 @@ public class EventManager implements IEventManager {
      * @param <E>        the event type
      * @return a new Disposable of the given eventType
      */
-    public synchronized <E> IEventSubscription onEvent(String id, Class<E> eventClass, Consumer<E> consumer) {
+    @Nullable
+    public synchronized <E> IEventSubscription onEvent(@NonNull String id, @NonNull Class<E> eventClass, @NonNull Consumer<E> consumer) {
         // return null if a disposable with the given id is already present when idUnique is set
         if (activeSubscriptions.containsKey(id)) {
             return null;

@@ -9,12 +9,15 @@ projectConfiguration {
 }
 
 dependencies {
-	// Project
+	// project
 	api(project(":api"))
 	testImplementation(project(":core"))
 
-	// Reactor - see https://repo1.maven.org/maven2/io/projectreactor/reactor-bom/Dysprosium-SR12/reactor-bom-Dysprosium-SR12.pom
+	// reactor - see https://repo1.maven.org/maven2/io/projectreactor/reactor-bom/Dysprosium-SR12/reactor-bom-Dysprosium-SR12.pom
 	api("io.projectreactor:reactor-core:3.7.2")
 	api("io.projectreactor.addons:reactor-extra:3.5.2")
 	testImplementation("io.projectreactor:reactor-test:3.7.2")
+
+	// annotations
+	implementation("org.jspecify:jspecify:1.0.0")
 }

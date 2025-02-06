@@ -2,6 +2,7 @@ package com.github.philippheuer.events4j.api.domain;
 
 import lombok.Getter;
 import lombok.ToString;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Map;
 import java.util.function.Consumer;
@@ -24,7 +25,7 @@ public class DisposableWrapper implements IEventSubscription {
     private final Map<String, IEventSubscription> activeSubscriptions;
 
     @SuppressWarnings("rawtypes")
-    public DisposableWrapper(IDisposable disposable, String id, Class eventType, Consumer consumer, Map<String, IEventSubscription> activeSubscriptions) {
+    public DisposableWrapper(@NonNull IDisposable disposable, @NonNull String id, @NonNull Class eventType, @NonNull Consumer consumer, @NonNull Map<String, IEventSubscription> activeSubscriptions) {
         this.disposable = disposable;
         this.id = id;
         this.eventType = eventType;

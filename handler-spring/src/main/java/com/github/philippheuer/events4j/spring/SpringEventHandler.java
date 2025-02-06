@@ -4,6 +4,7 @@ import com.github.philippheuer.events4j.api.domain.IDisposable;
 import com.github.philippheuer.events4j.api.service.IEventHandler;
 import com.github.philippheuer.events4j.spring.domain.SpringListenerSubscription;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
@@ -30,12 +31,13 @@ public class SpringEventHandler implements IEventHandler {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
-    public void publish(Object event) {
+    public void publish(@NonNull Object event) {
         applicationEventPublisher.publishEvent(event);
     }
 
+    @NonNull
     @Override
-    public <E> IDisposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
+    public <E> IDisposable onEvent(@NonNull Class<E> eventClass, @NonNull Consumer<E> consumer) {
         ApplicationListener<ApplicationEvent> listener = event -> {
             if (event instanceof PayloadApplicationEvent) {
                 PayloadApplicationEvent pae = (PayloadApplicationEvent) event;

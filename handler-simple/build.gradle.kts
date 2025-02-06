@@ -9,7 +9,10 @@ projectConfiguration {
 }
 
 dependencies {
-	// Project
+	// project
 	api(project(":api"))
 	testImplementation(project(":core"))
+
+	// annotations
+	implementation("org.jspecify:jspecify:1.0.0")
 }

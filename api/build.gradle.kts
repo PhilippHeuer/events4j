@@ -9,5 +9,6 @@ projectConfiguration {
 }
 
 dependencies {
-
+    // annotations
+    implementation("org.jspecify:jspecify:1.0.0")
 }

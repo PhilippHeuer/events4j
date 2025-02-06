@@ -1,5 +1,7 @@
 package com.github.philippheuer.events4j.api.service;
 
+import org.jspecify.annotations.NonNull;
+
 public interface IServiceMediator {
 
     /**
@@ -8,7 +10,7 @@ public interface IServiceMediator {
      * @param serviceName     The ServiceName
      * @param serviceInstance The ServiceInstance
      */
-    void addService(String serviceName, Object serviceInstance);
+    void addService(@NonNull String serviceName, @NonNull Object serviceInstance);
 
     /**
      * Gets a service from the ServiceMediator
@@ -16,8 +18,10 @@ public interface IServiceMediator {
      * @param serviceClass The ServiceClass you expect
      * @param serviceName  The ServiceName
      * @param <T>          The type of the Service
+     * @throws RuntimeException if no service of the provided type and name is registered
      * @return The ServiceInstance
      */
-    <T> T getService(Class<T> serviceClass, String serviceName);
+    @NonNull
+    <T> T getService(@NonNull Class<T> serviceClass, @NonNull String serviceName);
 
 }
