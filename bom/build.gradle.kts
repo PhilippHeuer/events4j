@@ -6,7 +6,6 @@ projectConfiguration {
     artifactId.set("events4j-bom")
     artifactDisplayName.set("Events4J - BOM")
     artifactDescription.set("Events4J - Bill of materials")
-    type.set(me.philippheuer.projectcfg.domain.ProjectType.LIBRARY)
 }
 
 dependencies {

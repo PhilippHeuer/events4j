@@ -7,6 +7,7 @@ projectConfiguration {
     artifactId.set("events4j-kotlin")
     artifactDisplayName.set("Events4J - Kotlin")
     artifactDescription.set("Events4J - Kotlin extension functions")
+    type.set(me.philippheuer.projectcfg.domain.ProjectType.LIBRARY)
 }
 
 dependencies {

@@ -1,3 +1,7 @@
+plugins {
+	`java-library`
+}
+
 projectConfiguration {
 	artifactId.set("events4j-core")
 	artifactDisplayName.set("Events4J Core")
