@@ -3,6 +3,7 @@ package com.github.philippheuer.events4j.core.services;
 import com.github.philippheuer.events4j.api.IEventManager;
 import com.github.philippheuer.events4j.api.service.IServiceMediator;
 import lombok.Getter;
+import org.jspecify.annotations.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,10 +12,6 @@ import java.util.Map;
  * The ServiceMediator
  * <p>
  * The ServiceMediator provides access to 3rd party services for your custom events
- *
- * @author Philipp Heuer [https://github.com/PhilippHeuer]
- * @version %I%, %G%
- * @since 1.0
  */
 public final class ServiceMediator implements IServiceMediator {
 
@@ -44,7 +41,7 @@ public final class ServiceMediator implements IServiceMediator {
      * @param serviceName     The ServiceName
      * @param serviceInstance The ServiceInstance
      */
-    public void addService(String serviceName, Object serviceInstance) {
+    public void addService(@NonNull String serviceName, @NonNull Object serviceInstance) {
         serviceReferences.put(serviceName, serviceInstance);
     }
 
@@ -56,7 +53,8 @@ public final class ServiceMediator implements IServiceMediator {
      * @param <T>          The type of the Service
      * @return The ServiceInstance
      */
-    public <T> T getService(Class<T> serviceClass, String serviceName) {
+    @NonNull
+    public <T> T getService(@NonNull Class<T> serviceClass, @NonNull String serviceName) {
         Object serviceInstance = serviceReferences.get(serviceName);
 
         if (serviceClass.isInstance(serviceInstance)) {

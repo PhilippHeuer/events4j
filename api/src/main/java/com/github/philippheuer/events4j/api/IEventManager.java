@@ -4,6 +4,8 @@ import com.github.philippheuer.events4j.api.domain.IDisposable;
 import com.github.philippheuer.events4j.api.domain.IEventSubscription;
 import com.github.philippheuer.events4j.api.service.IEventHandler;
 import com.github.philippheuer.events4j.api.service.IServiceMediator;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -15,14 +17,14 @@ public interface IEventManager extends AutoCloseable {
      *
      * @param event Event
      */
-    void publish(Object event);
+    void publish(@NonNull Object event);
 
     /**
      * Register EventHandler
      *
      * @param eventHandler IEventHandler
      */
-    void registerEventHandler(IEventHandler eventHandler);
+    void registerEventHandler(@NonNull IEventHandler eventHandler);
 
     /**
      * Registers a new consumer based default event handler if supported
@@ -32,13 +34,15 @@ public interface IEventManager extends AutoCloseable {
      * @param <E>        the event type
      * @return a new Disposable of the given eventType
      */
-    <E> IDisposable onEvent(Class<E> eventClass, Consumer<E> consumer);
+    @NonNull
+    <E> IDisposable onEvent(@NonNull Class<E> eventClass, @NonNull Consumer<E> consumer);
 
     /**
      * Get the ServiceMediator
      *
      * @return ServiceMediator
      */
+    @NonNull
     IServiceMediator getServiceMediator();
 
     /**
@@ -47,22 +51,25 @@ public interface IEventManager extends AutoCloseable {
      * @param eventHandlerClass the event handler class
      * @return boolean
      */
-    boolean hasEventHandler(Class<? extends IEventHandler> eventHandlerClass);
+    boolean hasEventHandler(@NonNull Class<? extends IEventHandler> eventHandlerClass);
 
     /**
      * Retrieves a EventHandler of the provided type
      *
      * @param eventHandlerClass the event handler class
      * @param <E> the eventHandler type
+     * @throws RuntimeException if no event handler of the provided type is registered
      * @return a reference to the requested event handler
      */
-    <E extends IEventHandler> E getEventHandler(Class<E> eventHandlerClass);
+    @NonNull
+    <E extends IEventHandler> E getEventHandler(@NonNull Class<E> eventHandlerClass);
 
     /**
      * Gets all registered event handlers
      *
      * @return a list of all registered event handlers
      */
+    @NonNull
     List<IEventHandler> getEventHandlers();
 
     /**
@@ -70,6 +77,7 @@ public interface IEventManager extends AutoCloseable {
      *
      * @return a list that holds IEventSubscription`s
      */
+    @NonNull
     List<IEventSubscription> getActiveSubscriptions();
 
 }

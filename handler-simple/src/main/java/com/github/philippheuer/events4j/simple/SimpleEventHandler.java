@@ -7,6 +7,7 @@ import com.github.philippheuer.events4j.simple.domain.SimpleEventHandlerSubscrip
 import com.github.philippheuer.events4j.simple.util.ClassUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -47,7 +48,8 @@ public class SimpleEventHandler implements IEventHandler {
      * @param <E>        the event type
      * @return a new Disposable of the given eventType
      */
-    public <E> IDisposable onEvent(Class<E> eventClass, Consumer<E> consumer) {
+    @NonNull
+    public <E> IDisposable onEvent(@NonNull Class<E> eventClass, @NonNull Consumer<E> consumer) {
         // register
         final List<Consumer<Object>> eventHandlers = consumerBasedHandlers.computeIfAbsent(eventClass, s -> new CopyOnWriteArrayList<>());
         //noinspection unchecked
@@ -96,7 +98,7 @@ public class SimpleEventHandler implements IEventHandler {
      *
      * @param event The event that will be dispatched to the simple based method listeners.
      */
-    public void publish(Object event) {
+    public void publish(@NonNull Object event) {
         handleConsumerHandlers(event);
         handleAnnotationHandlers(event);
     }
@@ -120,7 +122,7 @@ public class SimpleEventHandler implements IEventHandler {
      * @param event The event that will be dispatched to the simple based method listeners.
      */
     private void handleAnnotationHandlers(Object event) {
-        if (methodListeners.size() > 0) {
+        if (!methodListeners.isEmpty()) {
             for (Map.Entry<Class<?>, ConcurrentMap<Method, List<Object>>> e : methodListeners.entrySet()) {
                 if (e.getKey().isAssignableFrom(event.getClass())) {
                     ConcurrentMap<Method, List<Object>> eventClass = e.getValue();

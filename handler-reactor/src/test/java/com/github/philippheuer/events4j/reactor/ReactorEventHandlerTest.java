@@ -16,10 +16,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Reactor EventHandler Test
- *
- * @author Philipp Heuer [https://github.com/PhilippHeuer]
- * @version %I%, %G%
- * @since 1.0
  */
 class ReactorEventHandlerTest {
 

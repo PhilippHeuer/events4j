@@ -1,6 +1,7 @@
 package com.github.philippheuer.events4j.api.service;
 
 import com.github.philippheuer.events4j.api.domain.IDisposable;
+import lombok.NonNull;
 
 import java.util.function.Consumer;
 
@@ -11,7 +12,7 @@ public interface IEventHandler extends AutoCloseable {
      *
      * @param event Event
      */
-    void publish(Object event);
+    void publish(@NonNull Object event);
 
     /**
      * Registers a new consumer based default event handler if supported
@@ -21,6 +22,6 @@ public interface IEventHandler extends AutoCloseable {
      * @param <E>        the event type
      * @return a new Disposable of the given eventType
      */
-    <E> IDisposable onEvent(Class<E> eventClass, Consumer<E> consumer);
+    <E> IDisposable onEvent(@NonNull Class<E> eventClass, @NonNull Consumer<E> consumer);
 
 }

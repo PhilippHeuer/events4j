@@ -7,10 +7,6 @@ import java.lang.annotation.Target;
 
 /**
  * Marks method that only have a event as parameter and should handle said event
- *
- * @author Philipp Heuer [https://github.com/PhilippHeuer]
- * @version %I%, %G%
- * @since 1.0
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
