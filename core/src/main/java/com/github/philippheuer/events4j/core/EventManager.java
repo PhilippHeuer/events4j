@@ -173,6 +173,7 @@ public class EventManager implements IEventManager {
      * @param <E>               the eventHandler type
      * @return a reference to the requested event handler
      */
+    @NonNull
     public <E extends IEventHandler> E getEventHandler(@NonNull Class<E> eventHandlerClass) {
         Optional<E> eventHandler = getEventHandlers().stream().filter(h -> h.getClass().getName().equalsIgnoreCase(eventHandlerClass.getName())).map(h -> (E) h).findAny();
         return eventHandler.orElseThrow(() -> new RuntimeException("No eventHandler of type " + eventHandlerClass.getName() + " is registered!"));
