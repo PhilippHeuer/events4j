@@ -14,10 +14,10 @@ dependencies {
 	testImplementation(project(":core"))
 
 	// reactor - see https://repo1.maven.org/maven2/io/projectreactor/reactor-bom/Dysprosium-SR12/reactor-bom-Dysprosium-SR12.pom
-	api("io.projectreactor:reactor-core:3.7.3")
-	api("io.projectreactor.addons:reactor-extra:3.5.2")
-	testImplementation("io.projectreactor:reactor-test:3.7.3")
+	api(libs.reactorCore)
+	api(libs.reactorExtra)
+	testImplementation(libs.reactorTest)
 
 	// annotations
-	implementation("org.jspecify:jspecify:1.0.0")
+	implementation(libs.jspecify)
 }
