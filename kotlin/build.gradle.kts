@@ -13,10 +13,10 @@ projectConfiguration {
 dependencies {
     // project
     api(project(":api"))
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
+    api(libs.kotlinCoroutinesCore)
 
     // testing
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
+    testImplementation(libs.kotlinCoroutinesTest)
     testImplementation(project(":core"))
     testImplementation(project(":handler-simple"))
 }

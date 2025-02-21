@@ -14,9 +14,9 @@ dependencies {
 	testImplementation(project(":core"))
 
 	// spring
-	api("org.springframework.boot:spring-boot-starter:2.7.18")
-	testImplementation("org.springframework.boot:spring-boot-starter-test:2.7.18")
+	api(libs.springBootStarter)
+	testImplementation(libs.springBootStarterTest)
 
 	// annotations
-	implementation("org.jspecify:jspecify:1.0.0")
+	implementation(libs.jspecify)
 }

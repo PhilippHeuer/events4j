@@ -15,5 +15,5 @@ dependencies {
 	testImplementation(project(":handler-reactor"))
 
 	// annotations
-	implementation("org.jspecify:jspecify:1.0.0")
+	implementation(libs.jspecify)
 }
