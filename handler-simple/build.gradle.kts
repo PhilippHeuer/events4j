@@ -16,3 +16,9 @@ dependencies {
 	// annotations
 	implementation(libs.jspecify)
 }
+
+tasks.withType<Jar> {
+	manifest {
+		attributes("Automatic-Module-Name" to "events4j.handler.simple")
+	}
+}

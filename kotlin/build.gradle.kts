@@ -20,3 +20,9 @@ dependencies {
     testImplementation(project(":core"))
     testImplementation(project(":handler-simple"))
 }
+
+tasks.withType<Jar> {
+    manifest {
+        attributes("Automatic-Module-Name" to "events4j.kotlin")
+    }
+}
