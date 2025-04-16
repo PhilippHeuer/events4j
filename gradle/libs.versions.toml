@@ -9,4 +9,4 @@ kotlinCoroutinesCore = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core
 kotlinCoroutinesTest = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version = "1.10.2" }
 
 [plugins]
-configuration = { id = "me.philippheuer.configuration", version = "0.16.0" }
+configuration = { id = "me.philippheuer.configuration", version = "0.16.3" }
