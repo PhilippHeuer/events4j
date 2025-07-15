@@ -1,8 +1,8 @@
 [libraries]
 jspecify = { module = "org.jspecify:jspecify", version = "1.0.0" }
-reactorCore = { module = "io.projectreactor:reactor-core", version = "3.7.7" }
+reactorCore = { module = "io.projectreactor:reactor-core", version = "3.7.8" }
 reactorExtra = { module = "io.projectreactor.addons:reactor-extra", version = "3.5.2" }
-reactorTest = { module = "io.projectreactor:reactor-test", version = "3.7.7" }
+reactorTest = { module = "io.projectreactor:reactor-test", version = "3.7.8" }
 springBootStarter = { module = "org.springframework.boot:spring-boot-starter", version = "2.7.18" }
 springBootStarterTest = { module = "org.springframework.boot:spring-boot-starter-test", version = "2.7.18" }
 kotlinCoroutinesCore = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.10.2" }
