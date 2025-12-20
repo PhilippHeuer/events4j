@@ -6,6 +6,7 @@ projectConfiguration {
 	artifactId.set("events4j-handler-spring")
 	artifactDisplayName.set("Events4J Handler - Spring")
 	artifactDescription.set("Events4J Handler - Spring")
+	javaVersion.set(JavaVersion.VERSION_17)
 }
 
 dependencies {
