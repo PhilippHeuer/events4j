@@ -17,7 +17,7 @@ allprojects {
     projectConfiguration {
         language.set(me.philippheuer.projectcfg.domain.ProjectLanguage.JAVA)
         javaVersion.set(JavaVersion.VERSION_1_8)
-        lombokVersion.set("1.18.44")
+        lombokVersion.set("1.18.46")
         artifactGroupId.set("com.github.philippheuer.events4j")
 
         pom = { pom ->
