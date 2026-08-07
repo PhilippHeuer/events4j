@@ -1,5 +1,5 @@
 [libraries]
-jspecify = { module = "org.jspecify:jspecify", version = "1.0.0" }
+jspecify = { module = "org.jspecify:jspecify", version = "1.0.1" }
 reactorCore = { module = "io.projectreactor:reactor-core", version = "3.8.6" }
 reactorExtra = { module = "io.projectreactor.addons:reactor-extra", version = "3.6.0" }
 reactorTest = { module = "io.projectreactor:reactor-test", version = "3.8.6" }
